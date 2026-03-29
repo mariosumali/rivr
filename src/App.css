@@ -1,0 +1,226 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Header */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-panel);
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.app-header__left {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.app-header__title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-accent);
+}
+
+.app-header__subtitle {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.app-header__stats {
+  display: flex;
+  gap: 20px;
+}
+
+.app-header__stat {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.app-header__stat strong {
+  font-family: var(--font-mono);
+  color: var(--color-text-primary);
+}
+
+/* Main */
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  position: relative;
+}
+
+/* Start screen */
+.app-start {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-start__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  max-width: 420px;
+  text-align: center;
+}
+
+.app-start__heading {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.app-start__desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.app-start__difficulty {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.app-start__label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+.app-start__difficulty-btns {
+  display: flex;
+  gap: 6px;
+}
+
+.app-start__diff-btn {
+  padding: 8px 20px;
+  border-radius: var(--radius-button);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 150ms ease;
+}
+
+.app-start__diff-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.app-start__diff-btn--active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: white;
+}
+
+.app-start__play-btn {
+  padding: 14px 48px;
+  border-radius: var(--radius-button);
+  background: var(--color-accent);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 8px;
+  transition: filter 150ms ease;
+}
+
+.app-start__play-btn:hover {
+  filter: brightness(1.1);
+}
+
+/* Loading */
+.app-loading {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.app-loading__spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Action history bar */
+.app-history-bar {
+  display: flex;
+  gap: 8px;
+  padding: 8px 24px;
+  background: var(--color-panel);
+  border-bottom: 1px solid var(--color-border);
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+.app-history-bar__item {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  padding: 2px 8px;
+  background: var(--color-surface);
+  border-radius: 4px;
+}
+
+/* Footer */
+.app-footer {
+  flex-shrink: 0;
+}
+
+/* Error toast */
+.app-error {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: var(--color-incorrect);
+  color: white;
+  border-radius: var(--radius-panel);
+  font-size: 13px;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.app-error button {
+  padding: 4px 12px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+}
