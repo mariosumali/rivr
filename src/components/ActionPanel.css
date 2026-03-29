@@ -1,0 +1,123 @@
+.action-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 24px;
+  background: var(--color-panel);
+  border-top: 1px solid var(--color-border);
+}
+
+.action-panel__info {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.action-panel__info-item strong {
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+}
+
+.action-panel__buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.action-panel__btn {
+  padding: 10px 28px;
+  border-radius: var(--radius-button);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: background-color 150ms ease, transform 100ms ease;
+}
+
+.action-panel__btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.action-panel__btn--fold {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.action-panel__btn--fold:hover:not(:disabled) {
+  background: var(--color-panel-raised);
+  color: var(--color-text-primary);
+}
+
+.action-panel__btn--check,
+.action-panel__btn--call {
+  background: var(--color-accent);
+  color: white;
+}
+
+.action-panel__btn--check:hover:not(:disabled),
+.action-panel__btn--call:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.action-panel__btn--raise {
+  background: transparent;
+  border: 1.5px solid var(--color-accent);
+  color: var(--color-accent);
+}
+
+.action-panel__btn--raise:hover:not(:disabled) {
+  background: var(--color-accent);
+  color: white;
+}
+
+.action-panel__btn--confirm {
+  background: var(--color-accent);
+  color: white;
+  white-space: nowrap;
+}
+
+.action-panel__raise-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.action-panel__quick-sizes {
+  display: flex;
+  gap: 8px;
+}
+
+.action-panel__quick-btn {
+  padding: 6px 16px;
+  border-radius: var(--radius-button);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.action-panel__quick-btn:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.action-panel__quick-btn--allin {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.action-panel__custom-size {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.action-panel__size-input {
+  width: 120px;
+  text-align: center;
+  font-size: 14px;
+}
