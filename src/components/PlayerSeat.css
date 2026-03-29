@@ -1,0 +1,82 @@
+.player-seat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: absolute;
+  transition: opacity 300ms ease;
+}
+
+.player-seat--folded {
+  opacity: 0.35;
+}
+
+.player-seat--active .player-seat__info {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 12px var(--color-accent-glow);
+}
+
+.player-seat__info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+  padding: 6px 14px;
+  gap: 2px;
+  min-width: 64px;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.player-seat__position {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+}
+
+.player-seat__stack {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.player-seat__cards {
+  display: flex;
+  gap: 4px;
+}
+
+.player-seat__empty-cards {
+  width: 148px;
+  height: 100px;
+}
+
+.player-seat__bet {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.player-seat--hero .player-seat__bet {
+  bottom: -28px;
+}
+
+.player-seat__chip {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-chip);
+  border: 1.5px solid rgba(0, 0, 0, 0.2);
+}
+
+.player-seat__bet-amount {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-chip);
+}

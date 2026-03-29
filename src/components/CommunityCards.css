@@ -1,0 +1,19 @@
+.community-cards {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+}
+
+.community-cards__slot {
+  width: 72px;
+  height: 100px;
+}
+
+.community-cards__placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-card);
+  border: 1px dashed var(--color-border);
+  opacity: 0.3;
+}
