@@ -1,0 +1,133 @@
+/* ================================================================
+   rivr — CSS Design Token System
+   PRD Section 6.3: All theming via CSS custom properties.
+   Theme switching = CSS variable swap, zero re-render.
+   ================================================================ */
+
+:root,
+[data-theme='dark'] {
+  --color-bg: #0d0d0d;
+  --color-table: #141414;
+  --color-surface: #1a1a1a;
+  --color-card-face: #1a1a1a;
+  --color-card-back: #111111;
+  --color-accent: #c0392b;
+  --color-accent-glow: rgba(192, 57, 43, 0.3);
+  --color-text-primary: #e8e8e8;
+  --color-text-secondary: #888888;
+  --color-text-muted: #555555;
+  --color-suit-dark: #e8e8e8;
+  --color-suit-heart: #c0392b;
+  --color-suit-diamond: #2e86c1;
+  --color-correct: #27ae60;
+  --color-correct-glow: rgba(39, 174, 96, 0.25);
+  --color-incorrect: #c0392b;
+  --color-incorrect-glow: rgba(192, 57, 43, 0.15);
+  --color-border: #2a2a2a;
+  --color-panel: #181818;
+  --color-panel-raised: #1f1f1f;
+  --color-chip: #d4af37;
+  --color-chip-text: #1a1a1a;
+  --shadow-card: 0 4px 8px rgba(0, 0, 0, 0.5);
+  --shadow-card-hover: 0 6px 16px rgba(0, 0, 0, 0.6);
+  --shadow-panel: 0 -4px 24px rgba(0, 0, 0, 0.4);
+  --radius-card: 8px;
+  --radius-button: 6px;
+  --radius-panel: 12px;
+  --font-display: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --transition-theme: 300ms ease;
+}
+
+[data-theme='light'] {
+  --color-bg: #faf7f2;
+  --color-table: #e8e0d0;
+  --color-surface: #f5f0e8;
+  --color-card-face: #f5f0e8;
+  --color-card-back: #d8d0c0;
+  --color-accent: #1a2e44;
+  --color-accent-glow: rgba(26, 46, 68, 0.2);
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #555555;
+  --color-text-muted: #999999;
+  --color-suit-dark: #1a1a1a;
+  --color-suit-heart: #c0392b;
+  --color-suit-diamond: #2e86c1;
+  --color-correct: #27ae60;
+  --color-correct-glow: rgba(39, 174, 96, 0.15);
+  --color-incorrect: #c0392b;
+  --color-incorrect-glow: rgba(192, 57, 43, 0.1);
+  --color-border: #d0c8b8;
+  --color-panel: #f0ebe2;
+  --color-panel-raised: #f5f0e8;
+  --color-chip: #1a2e44;
+  --color-chip-text: #f5f0e8;
+  --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.1);
+  --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-panel: 0 -4px 24px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='felt'] {
+  --color-bg: #0f2d1a;
+  --color-table: #1b4d2e;
+  --color-surface: #1a1a1a;
+  --color-card-face: #1a1a1a;
+  --color-card-back: #0f1a14;
+  --color-accent: #d4af37;
+  --color-accent-glow: rgba(212, 175, 55, 0.3);
+  --color-text-primary: #e8e8e8;
+  --color-text-secondary: #a0b8a8;
+  --color-text-muted: #5a7a62;
+  --color-suit-dark: #e8e8e8;
+  --color-suit-heart: #c0392b;
+  --color-suit-diamond: #2e86c1;
+  --color-correct: #27ae60;
+  --color-correct-glow: rgba(39, 174, 96, 0.25);
+  --color-incorrect: #c0392b;
+  --color-incorrect-glow: rgba(192, 57, 43, 0.15);
+  --color-border: #2a5a3a;
+  --color-panel: #142a1c;
+  --color-panel-raised: #1a3824;
+  --color-chip: #d4af37;
+  --color-chip-text: #1a1a1a;
+  --shadow-card: 0 4px 8px rgba(0, 0, 0, 0.4);
+  --shadow-card-hover: 0 6px 16px rgba(0, 0, 0, 0.5);
+  --shadow-panel: 0 -4px 24px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='neon'] {
+  --color-bg: #050508;
+  --color-table: #080810;
+  --color-surface: #0d0d0d;
+  --color-card-face: #0d0d0d;
+  --color-card-back: #060608;
+  --color-accent: #00ff88;
+  --color-accent-glow: rgba(0, 255, 136, 0.25);
+  --color-text-primary: #e0e0e0;
+  --color-text-secondary: #70e0a0;
+  --color-text-muted: #305040;
+  --color-suit-dark: #e0e0e0;
+  --color-suit-heart: #ff2d78;
+  --color-suit-diamond: #00d4ff;
+  --color-correct: #00ff88;
+  --color-correct-glow: rgba(0, 255, 136, 0.2);
+  --color-incorrect: #ff2d78;
+  --color-incorrect-glow: rgba(255, 45, 120, 0.15);
+  --color-border: #1a2a20;
+  --color-panel: #0a0a10;
+  --color-panel-raised: #101018;
+  --color-chip: #00ff88;
+  --color-chip-text: #050508;
+  --shadow-card: 0 4px 12px rgba(0, 255, 136, 0.1);
+  --shadow-card-hover: 0 6px 20px rgba(0, 255, 136, 0.2);
+  --shadow-panel: 0 -4px 24px rgba(0, 255, 136, 0.08);
+}
+
+/* Theme transition on all themed properties */
+* {
+  transition:
+    background-color var(--transition-theme),
+    color var(--transition-theme),
+    border-color var(--transition-theme),
+    box-shadow var(--transition-theme);
+}
