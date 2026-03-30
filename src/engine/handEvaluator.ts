@@ -1,7 +1,9 @@
+import { createRequire } from 'node:module';
 import type { Card } from './types';
 
+const require = createRequire(import.meta.url);
+
 // pokersolver uses CJS exports; import the Hand class
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { Hand } = require('pokersolver') as {
   Hand: {
     solve(cards: string[], game?: string): PokersolverHand;

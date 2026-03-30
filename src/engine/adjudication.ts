@@ -2,7 +2,6 @@ import { calculateEquity } from './equity';
 import type {
   ActionType,
   AdjudicationResult,
-  Card,
   GameState,
   MixedFrequency,
   SizingRange,
@@ -73,6 +72,7 @@ export function adjudicate(
     isMixed,
     mixedFrequencies,
     conceptTags,
+    heroEquity: equity.heroEquity,
   };
 }
 
