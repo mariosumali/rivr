@@ -10,6 +10,7 @@ export type Card = `${Rank}${Suit}`;
 export type Position = 'BTN' | 'CO' | 'HJ' | 'MP' | 'UTG' | 'SB' | 'BB';
 export type Street = 'preflop' | 'flop' | 'turn' | 'river';
 export type ActionType = 'fold' | 'check' | 'call' | 'raise';
+export type CardAnimationState = 'idle' | 'dealing' | 'flipping' | 'folding';
 
 export interface EquityResult {
   heroEquity: number;
@@ -46,6 +47,8 @@ export interface AdjudicationResult {
   isMixed: boolean;
   mixedFrequencies?: MixedFrequency[];
   conceptTags: string[];
+  /** Hero equity vs villain range (0–1). */
+  heroEquity: number;
 }
 
 export interface EquityWorkerRequest {
