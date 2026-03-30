@@ -1,52 +1,57 @@
 .poker-table-container {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  flex: 1;
-  padding: 20px;
+  flex: 1 1 0;
+  padding: 8px 24px 0;
   min-height: 0;
+  overflow: hidden;
 }
 
 .poker-table {
   position: relative;
-  width: min(900px, 90vw);
-  height: min(520px, 60vh);
+  width: 100%;
+  max-width: 620px;
+  aspect-ratio: 1.6 / 1;
+  flex-shrink: 1;
+  min-height: 0;
 }
 
+/* Outer bezel — rounded rectangle */
 .poker-table__felt {
   position: absolute;
-  inset: 60px 40px;
-  background: var(--color-table);
-  border-radius: 50%;
-  border: 2px solid var(--color-border);
+  inset: 0;
+  border: 1px solid var(--color-table-line, rgba(255, 255, 255, 0.12));
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  box-shadow: inset 0 2px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Inner bezel — concentric rounded rectangle */
+.poker-table__felt::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid var(--color-table-line, rgba(255, 255, 255, 0.06));
+  border-radius: 14px;
+  pointer-events: none;
 }
 
 .poker-table__pot {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 4px;
-}
-
-.poker-table__pot-chip {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--color-chip);
-  border: 1.5px solid rgba(0, 0, 0, 0.2);
+  justify-content: center;
 }
 
 .poker-table__pot-amount {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  font-family: var(--piq-mono, var(--font-mono));
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary, #777);
+  letter-spacing: 0.02em;
 }
 
 .poker-table__community {
@@ -57,4 +62,12 @@
 .poker-table__seat {
   position: absolute;
   z-index: 1;
+}
+
+/* Hero section — normal flow, below the table */
+.poker-table__hero-section {
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 8px 0 4px;
 }

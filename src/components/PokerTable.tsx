@@ -21,41 +21,31 @@ interface PokerTableProps {
   animationState?: CardAnimationState;
 }
 
-/**
- * Seat positions around the oval table.
- * Hero is always bottom-center; opponents clockwise from BTN.
- * Positions are percentages of the table container.
- */
-const SEAT_POSITIONS: Record<number, { top: string; left: string }[]> = {
+const OPPONENT_POSITIONS: Record<number, { top: string; left: string }[]> = {
+  1: [
+    { top: '8%', left: '50%' },
+  ],
   2: [
-    { top: '88%', left: '50%' }, // hero (bottom center)
-    { top: '5%', left: '50%' },  // villain (top center)
+    { top: '14%', left: '25%' },
+    { top: '14%', left: '75%' },
   ],
   3: [
-    { top: '88%', left: '50%' },
-    { top: '20%', left: '18%' },
-    { top: '20%', left: '82%' },
+    { top: '48%', left: '5%' },
+    { top: '8%', left: '50%' },
+    { top: '48%', left: '95%' },
   ],
   4: [
-    { top: '88%', left: '50%' },
-    { top: '50%', left: '5%' },
-    { top: '5%', left: '50%' },
-    { top: '50%', left: '95%' },
+    { top: '55%', left: '5%' },
+    { top: '14%', left: '25%' },
+    { top: '14%', left: '75%' },
+    { top: '55%', left: '95%' },
   ],
   5: [
-    { top: '88%', left: '50%' },
-    { top: '65%', left: '5%' },
-    { top: '15%', left: '18%' },
-    { top: '15%', left: '82%' },
-    { top: '65%', left: '95%' },
-  ],
-  6: [
-    { top: '88%', left: '50%' },
-    { top: '65%', left: '5%' },
-    { top: '15%', left: '15%' },
-    { top: '5%', left: '50%' },
-    { top: '15%', left: '85%' },
-    { top: '65%', left: '95%' },
+    { top: '55%', left: '5%' },
+    { top: '14%', left: '16%' },
+    { top: '8%', left: '50%' },
+    { top: '14%', left: '84%' },
+    { top: '55%', left: '95%' },
   ],
 };
 
@@ -65,31 +55,26 @@ export function PokerTable({
   pot,
   animationState = 'idle',
 }: PokerTableProps) {
-  const count = Math.min(players.length, 6);
-  const positions = SEAT_POSITIONS[count] || SEAT_POSITIONS[6];
+  const hero = players.find((p) => p.isHero);
+  const opponents = players.filter((p) => !p.isHero);
+  const oppCount = Math.min(opponents.length, 5);
+  const positions = OPPONENT_POSITIONS[oppCount] || OPPONENT_POSITIONS[5];
 
   return (
     <div className="poker-table-container">
       <div className="poker-table">
         <div className="poker-table__felt">
-          {/* Pot display */}
           <div className="poker-table__pot">
             {pot > 0 && (
-              <>
-                <span className="poker-table__pot-chip" />
-                <span className="poker-table__pot-amount">Pot: {pot}bb</span>
-              </>
+              <span className="poker-table__pot-amount">pot {pot}bb</span>
             )}
           </div>
-
-          {/* Community cards */}
           <div className="poker-table__community">
             <CommunityCards cards={communityCards} animationState={animationState} />
           </div>
         </div>
 
-        {/* Player seats */}
-        {players.slice(0, count).map((player, i) => (
+        {opponents.slice(0, oppCount).map((player, i) => (
           <div
             key={player.position}
             className="poker-table__seat"
@@ -101,12 +86,24 @@ export function PokerTable({
           >
             <PlayerSeat
               {...player}
+              playerIndex={i + 1}
               animationState={animationState}
-              dealDelay={i * 0.08}
+              dealDelay={(i + 1) * 0.06}
             />
           </div>
         ))}
       </div>
+
+      {hero && (
+        <div className="poker-table__hero-section">
+          <PlayerSeat
+            {...hero}
+            playerIndex={0}
+            animationState={animationState}
+            dealDelay={0}
+          />
+        </div>
+      )}
     </div>
   );
 }
