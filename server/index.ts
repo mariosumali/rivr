@@ -125,6 +125,7 @@ app.post('/api/scenario/adjudicate', (req, res) => {
       isMixed: result.isMixed,
       mixedFrequencies: result.mixedFrequencies,
       conceptTags: result.conceptTags,
+      heroEquity: result.heroEquity,
       potOdds: potOddsRequired
         ? { required: potOddsRequired }
         : null,
