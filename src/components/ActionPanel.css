@@ -129,11 +129,7 @@
   border-top: 1px solid var(--piq-line-hi, var(--color-border));
   background: var(--piq-ink-0, var(--color-panel));
   gap: 0;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 20;
+  flex-shrink: 0;
 }
 
 .action-panel__pokeriq-row1 {
