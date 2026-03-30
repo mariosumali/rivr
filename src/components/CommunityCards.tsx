@@ -11,7 +11,6 @@ export function CommunityCards({
   cards,
   animationState = 'idle',
 }: CommunityCardsProps) {
-  // Always render 5 slots; unfilled slots are empty
   const slots = Array.from({ length: 5 }, (_, i) => cards[i] ?? null);
 
   return (
@@ -25,9 +24,12 @@ export function CommunityCards({
               faceDown={false}
               animationState={animationState}
               delay={i * 0.08}
+              size="sm"
             />
           ) : (
-            <div className="community-cards__placeholder" />
+            <div className="community-cards__placeholder">
+              <div className="community-cards__crosshatch" />
+            </div>
           )}
         </div>
       ))}
