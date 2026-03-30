@@ -246,3 +246,192 @@
 .feedback-panel__next-btn:hover {
   filter: brightness(1.1);
 }
+
+/* Right-rail (PokerIQ analysis column) */
+.feedback-panel--right {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: none;
+  border-top: none;
+  padding: 0;
+  background: var(--piq-ink-0, var(--color-panel));
+}
+
+.feedback-panel--right.feedback-panel--correct,
+.feedback-panel--right.feedback-panel--incorrect {
+  background: var(--piq-ink-0, var(--color-panel));
+}
+
+.feedback-panel--right .piq-panel-body {
+  gap: 16px;
+}
+
+.feedback-panel__ev-strip {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.feedback-panel__ev-strip--right {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--piq-line-hi, var(--color-border));
+  border: 1px solid var(--piq-line-hi, var(--color-border));
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.feedback-panel__ev-cell {
+  padding: 12px 10px;
+  background: var(--piq-ink-0, var(--color-surface));
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.feedback-panel__ev-strip--right .feedback-panel__ev-cell {
+  border-radius: 0;
+}
+
+.feedback-panel__ev-cell--best {
+  background: var(--piq-ink-2, var(--color-panel-raised));
+  border-left: 2px solid var(--color-text-primary);
+}
+
+.feedback-panel__ev-cell-lbl {
+  font-family: var(--piq-mono, var(--font-mono));
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.feedback-panel__ev-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-text-primary);
+  flex-shrink: 0;
+}
+
+.feedback-panel__ev-cell-num {
+  font-family: var(--piq-font, var(--font-display));
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.feedback-panel__ev-cell-num--pos {
+  color: var(--color-text-primary);
+}
+
+.feedback-panel__ev-cell-num--neg {
+  color: var(--color-text-muted);
+}
+
+.feedback-panel__ev-cell-unit {
+  font-family: var(--piq-mono, var(--font-mono));
+  font-size: 9px;
+  color: var(--color-text-muted);
+}
+
+.feedback-panel__verdict-block {
+  padding: 4px 0;
+}
+
+.feedback-panel__verdict-title {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.feedback-panel--correct .feedback-panel__verdict-title {
+  color: var(--piq-success, var(--color-correct));
+}
+
+.feedback-panel--incorrect .feedback-panel__verdict-title {
+  color: var(--piq-danger, var(--color-incorrect));
+}
+
+.feedback-panel__verdict-sub {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+}
+
+.feedback-panel__stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--piq-line-hi, var(--color-border));
+  border: 1px solid var(--piq-line-hi, var(--color-border));
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.feedback-panel__stat-cell {
+  padding: 14px 12px;
+  background: var(--piq-ink-0, var(--color-panel));
+}
+
+.feedback-panel__stat-lbl {
+  font-family: var(--piq-mono, var(--font-mono));
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+}
+
+.feedback-panel__stat-num {
+  font-family: var(--piq-font, var(--font-display));
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.feedback-panel__stat-num--dim {
+  color: var(--color-text-secondary);
+  font-weight: 400;
+}
+
+.feedback-panel__stat-num--edge {
+  color: var(--piq-success, var(--color-correct));
+}
+
+.feedback-panel__expl {
+  font-family: var(--piq-mono, var(--font-mono));
+  font-size: 11px;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+.feedback-panel__tag--piq {
+  font-family: var(--piq-mono, var(--font-mono));
+  font-size: 10px;
+  font-weight: 400;
+  padding: 3px 10px;
+  border-radius: 2px;
+  border: 1px solid var(--piq-line-hi, var(--color-border));
+  background: transparent;
+}
+
+.feedback-panel__next-btn--piq {
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px 20px;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-text-primary);
+}
+
+.feedback-panel__next-btn--piq:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
