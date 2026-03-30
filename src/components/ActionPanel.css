@@ -5,6 +5,7 @@
   padding: 16px 24px;
   background: var(--color-panel);
   border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
 }
 
 .action-panel__info {
@@ -120,4 +121,130 @@
   width: 120px;
   text-align: center;
   font-size: 14px;
+}
+
+/* ── PokerIQ dock (3 actions + sizing row) ── */
+.action-panel--pokeriq {
+  padding: 0;
+  border-top: 1px solid var(--piq-line-hi, var(--color-border));
+  background: var(--piq-ink-0, var(--color-panel));
+  gap: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+}
+
+.action-panel__pokeriq-row1 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-bottom: 1px solid var(--piq-line-hi, var(--color-border));
+}
+
+.action-panel__piq-cell {
+  padding: 16px 20px;
+  border: none;
+  border-right: 1px solid var(--piq-line-hi, var(--color-border));
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.action-panel__piq-cell:last-child {
+  border-right: none;
+}
+
+.action-panel__piq-cell:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.action-panel__piq-lbl {
+  display: block;
+  font-family: var(--piq-mono, var(--font-mono));
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+}
+
+.action-panel__piq-lbl-dim {
+  color: var(--color-text-secondary);
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.action-panel__piq-val {
+  font-family: var(--piq-font, var(--font-display));
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.action-panel__piq-val--bright {
+  color: var(--color-text-primary);
+}
+
+.action-panel__pokeriq-row2 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  padding: 12px 18px;
+  background: transparent;
+}
+
+.action-panel__piq-sizing-lbl {
+  font-family: var(--piq-mono, var(--font-mono));
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.action-panel__piq-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.action-panel__piq-chip {
+  padding: 4px 10px;
+  border-radius: 2px;
+  font-family: var(--piq-mono, var(--font-mono));
+  font-size: 10px;
+  border: 1px solid var(--piq-line-hi, var(--color-border));
+  color: var(--color-text-muted);
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 0.1s, color 0.1s;
+}
+
+.action-panel__piq-chip:hover:not(:disabled) {
+  border-color: var(--color-text-secondary);
+  color: var(--color-text-secondary);
+}
+
+.action-panel__piq-chip--on {
+  border-color: var(--color-text-primary);
+  color: var(--color-text-primary);
+  background: transparent;
+}
+
+.action-panel__piq-input {
+  width: 72px;
+  padding: 4px 8px;
+  font-size: 11px;
+  text-align: right;
+  background: transparent;
+  border: 1px solid var(--piq-line-hi, var(--color-border));
+  border-radius: 2px;
+  color: var(--color-text-primary);
+  font-family: var(--piq-mono, var(--font-mono));
 }
