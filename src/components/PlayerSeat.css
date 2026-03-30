@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   position: absolute;
   transition: opacity 300ms ease;
 }
@@ -11,72 +11,129 @@
   opacity: 0.35;
 }
 
-.player-seat--active .player-seat__info {
-  border-color: var(--color-accent);
-  box-shadow: 0 0 12px var(--color-accent-glow);
-}
-
-.player-seat__info {
+/* ── Avatar row (opponents) ── */
+.player-seat__avatar-row {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: var(--color-panel);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-button);
-  padding: 6px 14px;
   gap: 2px;
-  min-width: 64px;
-  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.player-seat__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.04);
+  position: relative;
+}
+
+.player-seat__avatar--active {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.player-seat__avatar--active::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.player-seat__avatar-label {
+  font-family: var(--piq-mono, var(--font-mono));
+  font-size: 9px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.04em;
+}
+
+.player-seat__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
 }
 
 .player-seat__position {
-  font-size: 11px;
-  font-weight: 600;
+  font-family: var(--piq-mono, var(--font-mono));
+  font-size: 9px;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-text-secondary);
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
 }
 
 .player-seat__stack {
-  font-family: var(--font-mono);
-  font-size: 13px;
+  font-family: var(--piq-mono, var(--font-mono));
+  font-size: 12px;
   font-weight: 500;
   color: var(--color-text-primary);
 }
 
+/* ── Bet pill ── */
+.player-seat__bet-pill {
+  font-family: var(--piq-mono, var(--font-mono));
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin-top: 2px;
+}
+
+/* ── Folded label ── */
+.player-seat__folded-label {
+  font-family: var(--piq-mono, var(--font-mono));
+  font-size: 9px;
+  color: var(--color-text-muted);
+  letter-spacing: 0.06em;
+  margin-top: 4px;
+}
+
+/* ── Cards ── */
 .player-seat__cards {
   display: flex;
   gap: 4px;
+  margin-top: 2px;
 }
 
 .player-seat__empty-cards {
-  width: 148px;
-  height: 100px;
+  width: 116px;
+  height: 80px;
 }
 
-.player-seat__bet {
+/* ── Hero info strip ── */
+.player-seat__hero-strip {
   display: flex;
   align-items: center;
-  gap: 4px;
-  position: absolute;
-  white-space: nowrap;
+  gap: 12px;
+  margin-top: 4px;
 }
 
-.player-seat--hero .player-seat__bet {
-  bottom: -28px;
-}
-
-.player-seat__chip {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--color-chip);
-  border: 1.5px solid rgba(0, 0, 0, 0.2);
-}
-
-.player-seat__bet-amount {
-  font-family: var(--font-mono);
-  font-size: 12px;
+.player-seat__hero-you {
+  font-family: var(--piq-mono, var(--font-mono));
+  font-size: 11px;
   font-weight: 500;
-  color: var(--color-chip);
+  color: var(--color-text-secondary);
+  letter-spacing: 0.04em;
+}
+
+.player-seat__hero-bet {
+  font-family: var(--piq-mono, var(--font-mono));
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 2px 8px;
 }
