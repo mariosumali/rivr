@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PokerIQ — Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Monochrome scale */
+  --ink-0:   #050505;
+  --ink-1:   #0C0C0C;
+  --ink-2:   #141414;
+  --ink-3:   #1C1C1C;
+  --ink-4:   #282828;
+  --ink-5:   #383838;
+  --line:    rgba(255,255,255,0.08);
+  --line-hi: rgba(255,255,255,0.16);
+  --line-md: rgba(255,255,255,0.11);
+
+  --white:   #F4F2EE;
+  --white-2: #BEBAB2;
+  --white-3: #787470;
+  --white-4: #484542;
+
+  /* Accent — used sparingly */
+  --red:     #B83228;
+  --red-t:   rgba(184,50,40,0.12);
+  --green:   #2A7A52;
+  --green-t: rgba(42,122,82,0.10);
+  --amber:   #8A6820;
+  --amber-t: rgba(138,104,32,0.10);
+
+  --success: #4ADE80;
+  --danger:  #F87171;
+
+  --r: 8px;
+  --r-sm: 4px;
+  --r-pill: 999px;
+
+  --f-serif: 'Geist', system-ui, sans-serif;
+  --f-mono:  'Geist Mono', 'Courier New', monospace;
+  --f-sans:  'Geist', system-ui, sans-serif;
+}
+
+body {
+  background: var(--ink-0);
+  color: var(--white);
+  font-family: var(--f-sans);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── SVG suit icons ─────────────────────────────── */
+/* Defined once, referenced everywhere */
+
+/* ── Utility ────────────────────────────────────── */
+.mono { font-family: var(--f-mono); }
+.serif { font-family: var(--f-sans); }
+.dim { color: var(--white-3); }
+.dimmer { color: var(--white-4); }
+.label {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--white-4);
+}
+.rule { height: 1px; background: var(--line); }
+.rule-strong { height: 1px; background: var(--line-hi); }
+
+/* ── Page layout ────────────────────────────────── */
+.page { max-width: 1100px; margin: 0 auto; padding: 0 40px 120px; }
+
+/* ── Nav ────────────────────────────────────────── */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  background: rgba(5,5,5,0.94);
+  backdrop-filter: blur(16px);
+  z-index: 100;
+  padding: 0 40px;
+}
+.wordmark {
+  font-family: var(--f-sans);
+  font-size: 16px; font-weight: 600; letter-spacing: -0.3px;
+  letter-spacing: -0.3px;
+  color: var(--white);
+}
+.wordmark em {  color: var(--white-3); }
+.nav-center {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--line-hi);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+}
+.nav-item {
+  padding: 6px 20px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: var(--white-4);
+  cursor: pointer;
+  border: none;
+  background: none;
+  border-right: 1px solid var(--line);
+  transition: color 0.12s, background 0.12s;
+}
+.nav-item:last-child { border-right: none; }
+.nav-item.on {
+  background: var(--ink-3);
+  color: var(--white);
+}
+.nav-stats {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+.nav-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.nav-stat-val {
+  font-family: var(--f-mono);
+  font-size: 13px;
+  color: var(--white);
+  font-weight: 500;
+}
+.nav-stat-lbl {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--white-4);
+  letter-spacing: 0.5px;
+}
+
+/* ── Section headers ────────────────────────────── */
+.screen-head {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 56px 0 28px;
+}
+.screen-num {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--white-4);
+  letter-spacing: 2px;
+}
+.screen-name {
+  font-family: var(--f-sans);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--white-2);
+  letter-spacing: -0.2px;
+}
+
+/* ── Card component ─────────────────────────────── */
+.card {
+  width: 52px;
+  height: 72px;
+  background: var(--ink-2);
+  border-radius: var(--r);
+  border: 1px solid var(--line-hi);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 7px 7px;
+  flex-shrink: 0;
+  transition: transform 0.14s ease;
+}
+.card:hover { transform: translateY(-3px); }
+
+.card-rank {
+  font-family: var(--f-sans);
+  font-size: 15px;
+  line-height: 1;
+  color: var(--white);
+  
+  position: relative;
+  z-index: 1;
+}
+/* Single large centered suit — the only suit icon on the card */
+.card-suit-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -44%);
+  width: 22px;
+  height: 22px;
+  color: var(--white-3);
+}
+
+.card--red .card-rank { color: var(--red); }
+.card--red .card-suit-center { color: var(--red); }
+
+.card--blue .card-rank { color: #4A7EA0; }
+.card--blue .card-suit-center { color: #4A7EA0; }
+
+.card--lg {
+  width: 66px;
+  height: 92px;
+  padding: 9px 9px;
+  border-radius: 10px;
+}
+.card--lg .card-rank { font-size: 22px; font-weight: 600; }
+.card--lg .card-suit-center { width: 30px; height: 30px; }
+
+.card--back {
+  background: var(--ink-3);
+  border-color: var(--line);
+}
+.card--back-pattern {
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(45deg, var(--line) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--line) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--line) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--line) 75%);
+  background-size: 8px 8px;
+  background-position: 0 0, 0 4px, 4px -4px, -4px 0;
+  border-radius: 6px;
+  opacity: 0.4;
+}
+
+/* ── Table felt ─────────────────────────────────── */
+.felt-wrap {
+  position: relative;
+  background: var(--ink-1);
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+}
+.felt-surface {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 50% 55%, var(--ink-3) 0%, var(--ink-1) 100%);
+  pointer-events: none;
+}
+
+/* ── Pill / tag ─────────────────────────────────── */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line-hi);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.3px;
+  color: var(--white-3);
+  white-space: nowrap;
+}
+.pill--active {
+  border-color: var(--white);
+  color: var(--white);
+  background: var(--ink-4);
+}
+.pill--green  { border-color: var(--green); color: var(--green); background: var(--green-t); }
+.pill--red    { border-color: var(--red); color: var(--red); background: var(--red-t); }
+.pill--amber  { border-color: var(--amber); color: var(--amber); background: var(--amber-t); }
+
+/* ── Buttons ────────────────────────────────────── */
+.btn {
+  padding: 10px 22px;
+  border-radius: var(--r);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  border: 1px solid var(--line-hi);
+  background: transparent;
+  color: var(--white-3);
+  transition: border-color 0.12s, color 0.12s, background 0.12s;
+}
+.btn:hover { border-color: var(--white); color: var(--white); }
+.btn--primary {
+  background: var(--white);
+  color: var(--ink-0);
+  border-color: var(--white);
+  font-weight: 500;
+}
+.btn--primary:hover { background: var(--white-2); border-color: var(--white-2); }
+.btn--action-call {
+  border-color: rgba(74,126,160,0.5);
+  color: #4A7EA0;
+  background: rgba(74,126,160,0.06);
+}
+.btn--action-raise {
+  border-color: rgba(184,50,40,0.5);
+  color: var(--red);
+  background: var(--red-t);
+}
+
+/* ── EV cell ────────────────────────────────────── */
+.ev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); }
+.ev-cell {
+  padding: 20px 20px;
+  background: var(--ink-1);
+}
+.ev-cell--best { background: var(--ink-2); }
+.ev-action-lbl { font-family: var(--f-mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--white-4); margin-bottom: 10px; }
+.ev-number {
+  font-family: var(--f-sans);
+  font-size: 28px; font-weight: 600; letter-spacing: -0.5px;
+  
+  line-height: 1;
+  color: var(--white-2);
+}
+.ev-number--pos { color: var(--white); }
+.ev-number--neg { color: var(--white-4); }
+.ev-unit { font-family: var(--f-mono); font-size: 10px; color: var(--white-4); margin-top: 4px; }
+.ev-best-marker {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--white);
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* ── Stat box ───────────────────────────────────── */
+.stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--line); }
+.stat-box {
+  padding: 20px 20px 18px;
+  background: var(--ink-1);
+}
+.stat-num {
+  font-family: var(--f-sans);
+  font-size: 32px; font-weight: 600; letter-spacing: -0.5px;
+  
+  line-height: 1;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+.stat-num--green { color: var(--green); }
+.stat-num--red { color: var(--red); }
+
+/* ── Accuracy bar ───────────────────────────────── */
+.acc-row { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.acc-row:last-child { border-bottom: none; }
+.acc-pos { font-family: var(--f-mono); font-size: 10px; letter-spacing: 1px; color: var(--white-3); width: 32px; }
+.acc-bar { flex: 1; height: 1px; background: var(--line-hi); position: relative; }
+.acc-fill { position: absolute; left: 0; top: 0; height: 1px; }
+.acc-fill--good  { background: var(--white); }
+.acc-fill--mid   { background: var(--white-3); }
+.acc-fill--bad   { background: var(--red); }
+.acc-pct { font-family: var(--f-mono); font-size: 11px; width: 30px; text-align: right; }
+.acc-flag {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--red);
+  flex-shrink: 0;
+}
+.acc-flag--hidden { opacity: 0; }
+
+/* ── Concept row ────────────────────────────────── */
+.concept-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line);
+}
+.concept-row:last-child { border-bottom: none; }
+.concept-name { flex: 1; font-family: var(--f-mono); font-size: 11px; color: var(--white-2); }
+.concept-bar-wrap { width: 100px; height: 1px; background: var(--line-hi); position: relative; }
+.concept-bar { position: absolute; left: 0; top: 0; height: 1px; background: var(--white); }
+.concept-pct { font-family: var(--f-mono); font-size: 11px; width: 32px; text-align: right; }
+
+/* ── Replay item ────────────────────────────────── */
+.replay-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+}
+.replay-item:last-child { border-bottom: none; }
+.replay-item:hover .replay-hand { color: var(--white); }
+.replay-hand { font-family: var(--f-sans); font-size: 15px;  color: var(--white-2); flex: 1; }
+.replay-meta { font-family: var(--f-mono); font-size: 10px; color: var(--white-4); }
+.replay-arrow {
+  width: 16px; height: 16px; flex-shrink: 0;
+}
+
+/* ── Range grid ─────────────────────────────────── */
+.range-grid {
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  gap: 2px;
+}
+.rg {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--f-mono);
+  font-size: 8px;
+  color: var(--white-4);
+  background: var(--ink-3);
+  border-radius: 3px;
+  transition: opacity 0.1s;
+  cursor: pointer;
+}
+.rg:hover { opacity: 0.7; }
+.rg--raise { background: rgba(184,50,40,0.18); color: rgba(244,180,176,0.8); }
+.rg--call  { background: rgba(74,126,160,0.15); color: rgba(160,200,228,0.7); }
+.rg--fold  { background: var(--ink-2); color: var(--white-4); }
+.rg--hero  { outline: 1px solid var(--white); outline-offset: 1px; color: var(--white); }
+
+/* ── Separator line ─────────────────────────────── */
+.sep { height: 1px; background: var(--line); margin: 0; }
+
+/* ── Layout panels ──────────────────────────────── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+.panel { border: 1px solid var(--line); }
+.panel + .panel { border-left: none; }
+
+/* ── Poker table layout ─────────────────────────── */
+.table-scene {
+  position: relative;
+  height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.table-oval {
+  position: absolute;
+  width: 520px;
+  height: 220px;
+  border-radius: 110px;
+  border: 1px solid var(--line-md);
+  background: radial-gradient(ellipse at 50% 40%, var(--ink-3) 0%, var(--ink-1) 100%);
+}
+
+.seat {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  transform: translate(-50%, -50%);
+}
+.seat-ring {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line-hi);
+  background: var(--ink-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.seat-ring--hero {
+  width: 38px;
+  height: 38px;
+  border-color: var(--white);
+  background: var(--ink-3);
+}
+.seat-ring--dealer {
+  border-color: var(--white-3);
+}
+.seat-label { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.5px; color: var(--white-4); }
+.seat-stack { font-family: var(--f-mono); font-size: 10px; color: var(--white-2); }
+
+.dealer-dot {
+  position: absolute;
+  top: -2px; right: -2px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 1px solid var(--ink-0);
+}
+
+.bet-float {
+  position: absolute;
+  font-family: var(--f-mono);
+  font-size: 9px;
+  color: var(--white-3);
+  border: 1px solid var(--line-hi);
+  background: var(--ink-2);
+  border-radius: 3px;
+  padding: 2px 6px;
+}
+
+.community-center {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  transform: translate(-50%, -50%);
+}
+.pot-display {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--white-3);
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+.pot-display strong { color: var(--white); font-weight: 500; }
+.community-cards { display: flex; gap: 5px; }
+
+.hero-zone {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.hero-cards { display: flex; gap: 6px; }
+.hero-info { display: flex; align-items: center; gap: 12px; }
+
+/* ── Action bar ─────────────────────────────────── */
+.action-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 28px;
+  border-top: 1px solid var(--line);
+  background: var(--ink-1);
+}
+.size-chips { display: flex; gap: 6px; margin-left: auto; align-items: center; }
+.size-chip {
+  padding: 5px 11px;
+  border-radius: var(--r-pill);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  border: 1px solid var(--line);
+  color: var(--white-4);
+  cursor: pointer;
+  transition: all 0.1s;
+  background: none;
+}
+.size-chip:hover, .size-chip--on {
+  border-color: var(--line-hi);
+  color: var(--white-2);
+  background: var(--ink-3);
+}
+.size-input {
+  width: 64px;
+  background: var(--ink-2);
+  border: 1px solid var(--line-hi);
+  border-radius: var(--r-sm);
+  padding: 5px 9px;
+  color: var(--white);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  text-align: right;
+  outline: none;
+}
+
+/* ── Equity bar ─────────────────────────────────── */
+.eq-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--ink-2);
+}
+.eq-lbl { font-family: var(--f-mono); font-size: 9px; letter-spacing: 1.5px; color: var(--white-4); text-transform: uppercase; }
+.eq-track { width: 64px; height: 1px; background: var(--line-hi); position: relative; }
+.eq-fill { position: absolute; left: 0; top: 0; height: 1px; background: var(--white); }
+.eq-pct { font-family: var(--f-mono); font-size: 11px; color: var(--white); }
+
+/* ── HUD row ────────────────────────────────────── */
+.hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  border-bottom: 1px solid var(--line);
+}
+.hud-left { display: flex; gap: 8px; align-items: center; }
+.hud-right { display: flex; gap: 10px; align-items: center; }
+.diff-pips { display: flex; gap: 4px; align-items: center; }
+.pip { width: 5px; height: 5px; border-radius: 50%; border: 1px solid var(--line-hi); }
+.pip--on { background: var(--white); border-color: var(--white); }
+.hud-more-btn {
+  font-family: var(--f-mono);
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: 1px;
+  color: var(--white-4);
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  padding: 2px 10px 6px;
+  cursor: pointer;
+}
+.hud-more-btn:hover { color: var(--white-2); border-color: var(--line-hi); }
+.stat-num--pos { color: var(--success); }
+
+/* ── Feedback panel ─────────────────────────────── */
+.fb-panel {
+  padding: 28px;
+  border-top: 1px solid var(--line-hi);
+  background: var(--ink-1);
+}
+.fb-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+.verdict-block {}
+.verdict-correct { font-family: var(--f-sans); font-size: 24px; font-weight: 600; letter-spacing: -0.3px; color: var(--white); margin-bottom: 4px; }
+.verdict-incorrect { font-family: var(--f-sans); font-size: 24px; font-weight: 600; letter-spacing: -0.3px; color: var(--red); margin-bottom: 4px; }
+.verdict-sub { font-family: var(--f-mono); font-size: 10px; color: var(--white-4); letter-spacing: 0.5px; }
+
+.ev-note {
+  padding: 16px 20px;
+  background: var(--ink-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--white-3);
+  line-height: 1.7;
+  margin-top: 20px;
+}
+.ev-note strong { color: var(--white); font-weight: 500; }
+
+.tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 16px; }
+
+/* ── Mixed spot ─────────────────────────────────── */
+.mixed-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: var(--ink-2);
+  border: 1px solid var(--line-md);
+  border-radius: var(--r);
+  margin-top: 16px;
+}
+.mixed-icon { width: 16px; height: 16px; flex-shrink: 0; }
+.mixed-text { font-family: var(--f-mono); font-size: 11px; color: var(--white-3); line-height: 1.6; }
+.mixed-text strong { color: var(--white-2); font-weight: 500; }
+
+/* ── Theme tiles ────────────────────────────────── */
+.theme-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+.theme-tile { background: var(--ink-1); }
+.theme-tile--selected {
+  box-shadow: inset 0 0 0 2px var(--success);
+  position: relative;
+  z-index: 1;
+}
+.theme-preview {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+}
+.theme-foot {
+  padding: 14px 18px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.theme-name { font-family: var(--f-sans); font-size: 14px;  }
+.theme-tag { font-family: var(--f-mono); font-size: 9px; letter-spacing: 1.5px; color: var(--white-4); text-transform: uppercase; }
+
+/* hand history section */
+.history-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0 16px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 0;
+}
+
+/* ── Range trainer layout ───────────────────────── */
+.range-wrap { display: grid; grid-template-columns: 1fr 280px; }
+.range-left-panel { padding: 28px; border-right: 1px solid var(--line); }
+.range-right-panel { padding: 28px; }
+
+/* position tabs */
+.pos-tabs { display: flex; gap: 0; border: 1px solid var(--line-hi); border-radius: var(--r-sm); overflow: hidden; }
+.pos-tab {
+  padding: 6px 13px;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  border: none;
+  background: none;
+  color: var(--white-4);
+  cursor: pointer;
+  border-right: 1px solid var(--line);
+  transition: all 0.1s;
+}
+.pos-tab:last-child { border-right: none; }
+.pos-tab--on { background: var(--ink-3); color: var(--white); }
+
+/* range legend */
+.range-legend { display: flex; gap: 16px; margin-top: 14px; }
+.legend-item { display: flex; align-items: center; gap: 7px; }
+.legend-swatch { width: 8px; height: 8px; border-radius: 2px; }
+.legend-txt { font-family: var(--f-mono); font-size: 9px; color: var(--white-4); }
+
+/* hand question */
+.hand-q {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.choice-btns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+.choice-btn {
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: none;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--white-3);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.12s;
+}
+.choice-btn:hover { border-color: var(--line-hi); color: var(--white); background: var(--ink-3); }
+
+/* Outer frame for each screen */
+.frame {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--ink-1);
+}
+
+/* SVG line art accent */
+.decorative-line {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--line-hi) 30%, var(--line-hi) 70%, transparent 100%);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.anim { animation: fadeUp 0.5s ease both; }
+.anim-2 { animation: fadeUp 0.5s 0.07s ease both; }
+.anim-3 { animation: fadeUp 0.5s 0.14s ease both; }
+.anim-4 { animation: fadeUp 0.5s 0.21s ease both; }
+</style>
+
+<!-- SVG Defs — thin-stroke hollow geometric suit icons -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <!-- SPADE: hollow stroke only -->
+    <symbol id="suit-spade" viewBox="0 0 20 20">
+      <path d="M10 2 C10 2 3 7.5 3 11.5 C3 14 5 15.5 7.5 14.5 C6.8 16 6 17 5 17.5 L15 17.5 C14 17 13.2 16 12.5 14.5 C15 15.5 17 14 17 11.5 C17 7.5 10 2 10 2Z"
+        fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/>
+    </symbol>
+    <!-- CLUB: hollow stroke only -->
+    <symbol id="suit-club" viewBox="0 0 20 20">
+      <circle cx="10" cy="7.5" r="3"   fill="none" stroke="currentColor" stroke-width="1"/>
+      <circle cx="6"  cy="11"  r="2.6" fill="none" stroke="currentColor" stroke-width="1"/>
+      <circle cx="14" cy="11"  r="2.6" fill="none" stroke="currentColor" stroke-width="1"/>
+      <line x1="8.5" y1="17" x2="11.5" y2="17" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+      <line x1="10"  y1="10.5" x2="10" y2="17" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+    </symbol>
+    <!-- HEART: hollow stroke only -->
+    <symbol id="suit-heart" viewBox="0 0 20 20">
+      <path d="M10 17 C10 17 2 11.5 2 6.5 C2 4 4 2 6.5 2 C8 2 9.2 2.8 10 4 C10.8 2.8 12 2 13.5 2 C16 2 18 4 18 6.5 C18 11.5 10 17 10 17Z"
+        fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/>
+    </symbol>
+    <!-- DIAMOND: hollow tall rotated square -->
+    <symbol id="suit-diamond" viewBox="0 0 20 20">
+      <polygon points="10,2 18,10 10,18 2,10"
+        fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/>
+    </symbol>
+    <!-- keep alias for any remaining references -->
+    <symbol id="suit-diamond-f" viewBox="0 0 20 20">
+      <polygon points="10,2 18,10 10,18 2,10"
+        fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- CHECK mark — clean line -->
+    <symbol id="icon-check" viewBox="0 0 16 16">
+      <polyline points="2,8.5 6.5,13 14,4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- CROSS mark -->
+    <symbol id="icon-cross" viewBox="0 0 16 16">
+      <line x1="3" y1="3" x2="13" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="13" y1="3" x2="3" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </symbol>
+    <!-- Arrow right -->
+    <symbol id="icon-arrow" viewBox="0 0 16 16">
+      <line x1="2" y1="8" x2="13" y2="8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <polyline points="9,4 13,8 9,12" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- Balance scale simplified -->
+    <symbol id="icon-balance" viewBox="0 0 16 16">
+      <line x1="8" y1="2" x2="8" y2="14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="3" y1="6" x2="13" y2="6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M3 6 Q1 9 3 10 Q5 9 3 6Z" fill="currentColor"/>
+      <path d="M13 6 Q11 9 13 10 Q15 9 13 6Z" fill="currentColor"/>
+      <line x1="5" y1="14" x2="11" y2="14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+    </symbol>
+    <!-- Flag / weakness indicator -->
+    <symbol id="icon-flag" viewBox="0 0 16 16">
+      <line x1="4" y1="2" x2="4" y2="14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M4 2 L12 5 L4 8Z" fill="currentColor"/>
+    </symbol>
+    <!-- Replay -->
+    <symbol id="icon-replay" viewBox="0 0 16 16">
+      <path d="M13 8 A5 5 0 1 1 10 3.5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <polyline points="10,1 10,4 13,4" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="wordmark">Poker<em>IQ</em></div>
+  <div class="nav-center">
+    <button class="nav-item on">Decision</button>
+    <button class="nav-item">Ranges</button>
+    <button class="nav-item">Free Play</button>
+    <button class="nav-item">Review</button>
+  </div>
+  <div class="nav-stats">
+    <div class="nav-stat">
+      <span class="nav-stat-val">12</span>
+      <span class="nav-stat-lbl">streak</span>
+    </div>
+    <div style="width:1px;height:16px;background:var(--line-hi)"></div>
+    <div class="nav-stat">
+      <span class="nav-stat-val">74%</span>
+      <span class="nav-stat-lbl">accuracy</span>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- ══════════════════════════════════════════════
+       SCREEN 01 — DECISION MODE
+  ═══════════════════════════════════════════════ -->
+  <div class="screen-head">
+    <span class="screen-num">01</span>
+    <span class="screen-name">Decision Mode — Active Hand</span>
+  </div>
+
+  <div class="frame anim">
+    <!-- HUD -->
+    <div class="hud">
+      <div class="hud-left">
+        <div class="pill pill--active">BTN</div>
+        <div class="pill">Flop</div>
+        <div class="pill">6-max · 100bb</div>
+      </div>
+      <div class="hud-right">
+        <div class="diff-pips">
+          <div class="pip pip--on"></div>
+          <div class="pip pip--on"></div>
+          <div class="pip"></div>
+        </div>
+        <button type="button" class="hud-more-btn" aria-label="More options">…</button>
+        <button type="button" class="btn" style="padding:5px 14px;font-size:10px">Skip</button>
+      </div>
+    </div>
+
+    <!-- Table scene -->
+    <div class="felt-wrap">
+      <div class="felt-surface"></div>
+      <div class="table-scene">
+        <div class="table-oval"></div>
+
+        <!-- Seats — arranged around oval -->
+        <!-- Top center: UTG (dealer) -->
+        <div class="seat" style="left:50%;top:18%">
+          <div class="seat-ring seat-ring--dealer" style="position:relative">
+            <div class="dealer-dot"></div>
+            <span class="mono" style="font-size:9px;color:var(--white-3)">P2</span>
+          </div>
+          <div class="seat-label">UTG</div>
+          <div class="seat-stack">€ 87</div>
+          <div class="bet-float" style="position:static;margin-top:2px">€ 12</div>
+        </div>
+
+        <!-- Top left: CO (folded) -->
+        <div class="seat" style="left:24%;top:26%" >
+          <div class="seat-ring" style="opacity:0.28">
+            <span class="mono" style="font-size:9px;color:var(--white-4)">P3</span>
+          </div>
+          <div class="seat-label" style="opacity:0.28">CO</div>
+          <div class="seat-stack" style="opacity:0.28">folded</div>
+        </div>
+
+        <!-- Top right: SB -->
+        <div class="seat" style="left:76%;top:26%">
+          <div class="seat-ring">
+            <span class="mono" style="font-size:9px;color:var(--white-3)">P4</span>
+          </div>
+          <div class="seat-label">SB</div>
+          <div class="seat-stack">€ 94</div>
+        </div>
+
+        <!-- Community cards (center) -->
+        <div class="community-center" style="left:50%;top:50%">
+          <div class="pot-display">pot <strong>€ 28</strong></div>
+          <div class="community-cards">
+            <!-- A♥ -->
+            <div class="card card--red">
+              <span class="card-rank">A</span>
+              <svg class="card-suit-center"><use href="#suit-heart"/></svg>
+            </div>
+            <!-- K♠ -->
+            <div class="card">
+              <span class="card-rank">K</span>
+              <svg class="card-suit-center" style="color:var(--white-2)"><use href="#suit-spade"/></svg>
+            </div>
+            <!-- 7♣ -->
+            <div class="card">
+              <span class="card-rank">7</span>
+              <svg class="card-suit-center" style="color:var(--white-3)"><use href="#suit-club"/></svg>
+            </div>
+            <!-- two face-down -->
+            <div class="card card--back"><div class="card--back-pattern"></div></div>
+            <div class="card card--back"><div class="card--back-pattern"></div></div>
+          </div>
+        </div>
+
+        <!-- Hero zone -->
+        <div class="hero-zone">
+          <div class="hero-cards">
+            <div class="card card--lg card--red">
+              <span class="card-rank">A</span>
+              <svg class="card-suit-center"><use href="#suit-heart"/></svg>
+            </div>
+            <div class="card card--lg card--red">
+              <span class="card-rank">A</span>
+              <svg class="card-suit-center"><use href="#suit-diamond"/></svg>
+            </div>
+          </div>
+          <div class="hero-info">
+            <div style="font-family:var(--f-mono);font-size:9px;letter-spacing:1.5px;color:var(--white-4);text-transform:uppercase">You · € 100</div>
+            <div class="eq-bar-wrap">
+              <div class="eq-lbl">eq</div>
+              <div class="eq-track"><div class="eq-fill" style="width:72%"></div></div>
+              <div class="eq-pct">72%</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /table-scene -->
+    </div><!-- /felt-wrap -->
+
+    <!-- Action bar -->
+    <div style="border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr 1fr auto;">
+      <button style="padding:20px 24px;background:var(--ink-1);border:none;border-right:1px solid var(--line);cursor:pointer;text-align:left;transition:background 0.12s;" onmouseover="this.style.background='var(--ink-2)'" onmouseout="this.style.background='var(--ink-1)'">
+        <div style="font-family:var(--f-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--white-4);margin-bottom:8px">Action</div>
+        <div style="font-family:var(--f-sans);font-size:18px;font-weight:500;color:var(--white-3)">Fold</div>
+      </button>
+      <button style="padding:20px 24px;background:var(--ink-1);border:none;border-right:1px solid var(--line);cursor:pointer;text-align:left;transition:background 0.12s;" onmouseover="this.style.background='var(--ink-2)'" onmouseout="this.style.background='var(--ink-1)'">
+        <div style="font-family:var(--f-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--white-4);margin-bottom:8px">Action <span style="color:var(--white-3)">· € 12</span></div>
+        <div style="font-family:var(--f-sans);font-size:18px;font-weight:600;color:var(--white)">Call</div>
+      </button>
+      <button style="padding:20px 24px;background:var(--ink-1);border:none;border-right:1px solid var(--line);cursor:pointer;text-align:left;transition:background 0.12s;" onmouseover="this.style.background='var(--ink-2)'" onmouseout="this.style.background='var(--ink-1)'">
+        <div style="font-family:var(--f-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--white-4);margin-bottom:8px">Action</div>
+        <div style="font-family:var(--f-sans);font-size:18px;font-weight:600;color:var(--white)">Raise</div>
+      </button>
+      <div style="padding:20px 20px;background:var(--ink-1);display:flex;flex-direction:column;justify-content:space-between;gap:10px;min-width:220px">
+        <div style="font-family:var(--f-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--white-4)">Sizing</div>
+        <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">
+          <button class="size-chip">½ pot</button>
+          <button class="size-chip size-chip--on">¾ pot</button>
+          <button class="size-chip">Pot</button>
+          <button class="size-chip">All-in</button>
+          <input class="size-input" value="€ 21" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       SCREEN 02 — FEEDBACK · CORRECT
+  ═══════════════════════════════════════════════ -->
+  <div class="screen-head">
+    <span class="screen-num">02</span>
+    <span class="screen-name">Feedback — Correct Decision</span>
+  </div>
+
+  <div class="frame anim-2">
+    <!-- Collapsed context bar -->
+    <div class="hud" style="padding:12px 28px">
+      <div class="hud-left" style="gap:10px;opacity:0.45">
+        <div class="pill">BTN</div>
+        <div class="pill">Flop · A♥ K♠ 7♣</div>
+        <div class="pill">AA vs UTG raise € 12</div>
+      </div>
+    </div>
+
+    <!-- EV grid -->
+    <div class="ev-grid">
+      <div class="ev-cell">
+        <div class="ev-action-lbl">Fold</div>
+        <div class="ev-number ev-number--neg">0.0</div>
+        <div class="ev-unit">bb</div>
+      </div>
+      <div class="ev-cell">
+        <div class="ev-action-lbl">Call</div>
+        <div class="ev-number ev-number--pos">+4.2</div>
+        <div class="ev-unit">bb</div>
+      </div>
+      <div class="ev-cell ev-cell--best">
+        <div class="ev-action-lbl"><span class="ev-best-marker"></span>Raise ¾ pot — optimal</div>
+        <div class="ev-number ev-number--pos">+8.6</div>
+        <div class="ev-unit">bb</div>
+      </div>
+    </div>
+
+    <!-- Feedback body -->
+    <div class="fb-panel">
+      <div class="fb-head">
+        <div class="verdict-block">
+          <div class="verdict-correct">Correct.</div>
+          <div class="verdict-sub">Raise to € 21 · ¾ pot · optimal sizing</div>
+        </div>
+        <button class="btn btn--primary">Next hand</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)">
+        <div style="padding:16px 18px;background:var(--ink-1)">
+          <div class="label" style="margin-bottom:8px">Your equity</div>
+          <div style="font-family:var(--f-sans);font-size:22px;font-weight:600;color:var(--white)">72%</div>
+        </div>
+        <div style="padding:16px 18px;background:var(--ink-1)">
+          <div class="label" style="margin-bottom:8px">Pot odds require</div>
+          <div style="font-family:var(--f-sans);font-size:22px;font-weight:400;color:var(--white-3)">30%</div>
+        </div>
+        <div style="padding:16px 18px;background:var(--ink-1)">
+          <div class="label" style="margin-bottom:8px">Edge</div>
+          <div class="stat-num--pos" style="font-family:var(--f-sans);font-size:22px;font-weight:600">+42%</div>
+        </div>
+      </div>
+
+      <div class="ev-note">
+        With <strong>72% equity</strong> vs AK, KK, 77, and flush draws, raising ¾ pot builds the pot, charges draws, and extracts value. Calling leaves <strong>+4.4bb unrealized.</strong>
+      </div>
+
+      <div class="tags">
+        <div class="pill pill--active">Top Set</div>
+        <div class="pill pill--active">Value Raise</div>
+        <div class="pill">Pot Building</div>
+        <div class="pill">Draw Protection</div>
+        <div class="pill">SPR</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       SCREEN 03 — FEEDBACK · MIXED STRATEGY
+  ═══════════════════════════════════════════════ -->
+  <div class="screen-head">
+    <span class="screen-num">03</span>
+    <span class="screen-name">Feedback — Mixed Strategy Spot</span>
+  </div>
+
+  <div class="frame anim-3">
+    <div class="ev-grid">
+      <div class="ev-cell">
+        <div class="ev-action-lbl">Fold</div>
+        <div class="ev-number ev-number--neg">−2.1</div>
+        <div class="ev-unit">bb</div>
+      </div>
+      <div class="ev-cell ev-cell--best">
+        <div class="ev-action-lbl"><span class="ev-best-marker"></span>Call · 45% freq.</div>
+        <div class="ev-number ev-number--pos">+3.4</div>
+        <div class="ev-unit">bb</div>
+      </div>
+      <div class="ev-cell ev-cell--best">
+        <div class="ev-action-lbl"><span class="ev-best-marker"></span>Raise · 55% freq.</div>
+        <div class="ev-number ev-number--pos">+3.8</div>
+        <div class="ev-unit">bb</div>
+      </div>
+    </div>
+
+    <div class="fb-panel">
+      <div class="fb-head">
+        <div class="verdict-block">
+          <div class="verdict-correct">Correct.</div>
+          <div class="verdict-sub">Both call and raise are GTO-acceptable here</div>
+        </div>
+        <button class="btn btn--primary">Next hand</button>
+      </div>
+
+      <div class="mixed-row">
+        <svg class="mixed-icon" style="color:var(--white-3)"><use href="#icon-balance"/></svg>
+        <div class="mixed-text">
+          <strong>Mixed strategy spot.</strong> Raise and call are within <strong>0.4bb</strong> of each other — below the indifference threshold. GTO mixes 55% raise / 45% call to prevent opponents from exploiting a pure strategy. Either action is mathematically correct.
+        </div>
+      </div>
+
+      <div class="tags" style="margin-top:14px">
+        <div class="pill pill--amber">Mixed Strategy</div>
+        <div class="pill">Range Balance</div>
+        <div class="pill">GTO Frequencies</div>
+        <div class="pill">Near-Indifferent</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       SCREEN 04 — RANGE TRAINER
+  ═══════════════════════════════════════════════ -->
+  <div class="screen-head">
+    <span class="screen-num">04</span>
+    <span class="screen-name">Range Trainer</span>
+  </div>
+
+  <div class="frame anim-4">
+    <div class="range-wrap">
+      <div class="range-left-panel">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+          <div>
+            <div style="font-family:var(--f-sans);font-size:18px;margin-bottom:3px">Opening Ranges</div>
+            <div class="label">100bb · 6-max</div>
+          </div>
+          <div class="pos-tabs">
+            <button class="pos-tab">UTG</button>
+            <button class="pos-tab">HJ</button>
+            <button class="pos-tab">CO</button>
+            <button class="pos-tab pos-tab--on">BTN</button>
+            <button class="pos-tab">SB</button>
+            <button class="pos-tab">BB</button>
+          </div>
+        </div>
+
+        <div class="range-grid">
+          <div class="rg rg--raise">AA</div><div class="rg rg--raise">AKs</div><div class="rg rg--raise">AQs</div><div class="rg rg--raise">AJs</div><div class="rg rg--raise">ATs</div><div class="rg rg--raise">A9s</div><div class="rg rg--raise">A8s</div><div class="rg rg--raise">A7s</div><div class="rg rg--raise">A6s</div><div class="rg rg--raise">A5s</div><div class="rg rg--raise">A4s</div><div class="rg rg--raise">A3s</div><div class="rg rg--raise">A2s</div>
+          <div class="rg rg--raise">AKo</div><div class="rg rg--raise">KK</div><div class="rg rg--raise">KQs</div><div class="rg rg--raise">KJs</div><div class="rg rg--raise">KTs</div><div class="rg rg--raise">K9s</div><div class="rg rg--raise">K8s</div><div class="rg rg--raise">K7s</div><div class="rg rg--raise">K6s</div><div class="rg rg--call">K5s</div><div class="rg rg--fold">K4s</div><div class="rg rg--fold">K3s</div><div class="rg rg--fold">K2s</div>
+          <div class="rg rg--raise">AQo</div><div class="rg rg--raise">KQo</div><div class="rg rg--raise">QQ</div><div class="rg rg--raise">QJs</div><div class="rg rg--raise">QTs</div><div class="rg rg--raise">Q9s</div><div class="rg rg--call">Q8s</div><div class="rg rg--fold">Q7s</div><div class="rg rg--fold">Q6s</div><div class="rg rg--fold">Q5s</div><div class="rg rg--fold">Q4s</div><div class="rg rg--fold">Q3s</div><div class="rg rg--fold">Q2s</div>
+          <div class="rg rg--raise">AJo</div><div class="rg rg--raise">KJo</div><div class="rg rg--raise">QJo</div><div class="rg rg--raise">JJ</div><div class="rg rg--raise">JTs</div><div class="rg rg--raise">J9s</div><div class="rg rg--call">J8s</div><div class="rg rg--fold">J7s</div><div class="rg rg--fold">J6s</div><div class="rg rg--fold">J5s</div><div class="rg rg--fold">J4s</div><div class="rg rg--fold">J3s</div><div class="rg rg--fold">J2s</div>
+          <div class="rg rg--raise">ATo</div><div class="rg rg--raise">KTo</div><div class="rg rg--raise">QTo</div><div class="rg rg--raise">JTo</div><div class="rg rg--raise">TT</div><div class="rg rg--raise">T9s</div><div class="rg rg--call">T8s</div><div class="rg rg--call">T7s</div><div class="rg rg--fold">T6s</div><div class="rg rg--fold">T5s</div><div class="rg rg--fold">T4s</div><div class="rg rg--fold">T3s</div><div class="rg rg--fold">T2s</div>
+          <div class="rg rg--call">A9o</div><div class="rg rg--call">K9o</div><div class="rg rg--call">Q9o</div><div class="rg rg--call">J9o</div><div class="rg rg--call">T9o</div><div class="rg rg--raise">99</div><div class="rg rg--raise">98s</div><div class="rg rg--call">97s</div><div class="rg rg--call">96s</div><div class="rg rg--fold">95s</div><div class="rg rg--fold">94s</div><div class="rg rg--fold">93s</div><div class="rg rg--fold">92s</div>
+          <div class="rg rg--fold">A8o</div><div class="rg rg--fold">K8o</div><div class="rg rg--fold">Q8o</div><div class="rg rg--fold">J8o</div><div class="rg rg--fold">T8o</div><div class="rg rg--call">98o</div><div class="rg rg--raise">88</div><div class="rg rg--raise">87s</div><div class="rg rg--call">86s</div><div class="rg rg--call">85s</div><div class="rg rg--fold">84s</div><div class="rg rg--fold">83s</div><div class="rg rg--fold">82s</div>
+          <div class="rg rg--fold">A7o</div><div class="rg rg--fold">K7o</div><div class="rg rg--fold">Q7o</div><div class="rg rg--fold">J7o</div><div class="rg rg--fold">T7o</div><div class="rg rg--fold">97o</div><div class="rg rg--call">87o</div><div class="rg rg--raise">77</div><div class="rg rg--raise">76s</div><div class="rg rg--call">75s</div><div class="rg rg--call">74s</div><div class="rg rg--fold">73s</div><div class="rg rg--fold">72s</div>
+          <div class="rg rg--fold">A6o</div><div class="rg rg--fold">K6o</div><div class="rg rg--fold">Q6o</div><div class="rg rg--fold">J6o</div><div class="rg rg--fold">T6o</div><div class="rg rg--fold">96o</div><div class="rg rg--fold">86o</div><div class="rg rg--call">76o</div><div class="rg rg--raise">66</div><div class="rg rg--raise">65s</div><div class="rg rg--call">64s</div><div class="rg rg--fold">63s</div><div class="rg rg--fold">62s</div>
+          <div class="rg rg--fold">A5o</div><div class="rg rg--fold">K5o</div><div class="rg rg--fold">Q5o</div><div class="rg rg--fold">J5o</div><div class="rg rg--fold">T5o</div><div class="rg rg--fold">95o</div><div class="rg rg--fold">85o</div><div class="rg rg--fold">75o</div><div class="rg rg--call">65o</div><div class="rg rg--raise">55</div><div class="rg rg--raise">54s</div><div class="rg rg--call">53s</div><div class="rg rg--fold">52s</div>
+          <div class="rg rg--fold">A4o</div><div class="rg rg--fold">K4o</div><div class="rg rg--fold">Q4o</div><div class="rg rg--fold">J4o</div><div class="rg rg--fold">T4o</div><div class="rg rg--fold">94o</div><div class="rg rg--fold">84o</div><div class="rg rg--fold">74o</div><div class="rg rg--fold">64o</div><div class="rg rg--fold">54o</div><div class="rg rg--raise">44</div><div class="rg rg--raise">43s</div><div class="rg rg--call">42s</div>
+          <div class="rg rg--fold">A3o</div><div class="rg rg--fold">K3o</div><div class="rg rg--fold">Q3o</div><div class="rg rg--fold">J3o</div><div class="rg rg--fold">T3o</div><div class="rg rg--fold">93o</div><div class="rg rg--fold">83o</div><div class="rg rg--fold">73o</div><div class="rg rg--fold">63o</div><div class="rg rg--fold">53o</div><div class="rg rg--fold">43o</div><div class="rg rg--raise">33</div><div class="rg rg--raise">32s</div>
+          <div class="rg rg--fold">A2o</div><div class="rg rg--fold">K2o</div><div class="rg rg--fold">Q2o</div><div class="rg rg--fold">J2o</div><div class="rg rg--fold">T2o</div><div class="rg rg--fold">92o</div><div class="rg rg--fold">82o</div><div class="rg rg--fold">72o</div><div class="rg rg--fold">62o</div><div class="rg rg--fold">52o</div><div class="rg rg--fold">42o</div><div class="rg rg--fold">32o</div><div class="rg rg--raise">22</div>
+        </div>
+
+        <div class="range-legend">
+          <div class="legend-item">
+            <div class="legend-swatch" style="background:rgba(184,50,40,0.35)"></div>
+            <span class="legend-txt">Raise · 44%</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-swatch" style="background:rgba(74,126,160,0.3)"></div>
+            <span class="legend-txt">Call · 8%</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-swatch" style="background:var(--ink-2);border:1px solid var(--line)"></div>
+            <span class="legend-txt">Fold · 48%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="range-right-panel">
+        <div class="hand-q">
+          <div class="label">Your hand · BTN</div>
+          <div style="display:flex;gap:8px">
+            <div class="card card--lg card--red">
+              <span class="card-rank">Q</span>
+              <svg class="card-suit-center"><use href="#suit-heart"/></svg>
+            </div>
+            <div class="card card--lg card--blue">
+              <span class="card-rank">J</span>
+              <svg class="card-suit-center"><use href="#suit-diamond"/></svg>
+            </div>
+          </div>
+          <div class="label">QJo · vs no prior action</div>
+        </div>
+
+        <div class="choice-btns" style="margin-bottom:24px">
+          <button class="choice-btn" style="border-color:rgba(184,50,40,0.4);color:var(--red)">Raise</button>
+          <button class="choice-btn">Call</button>
+          <button class="choice-btn">Fold</button>
+        </div>
+
+        <div class="label" style="margin-bottom:14px">Accuracy by position</div>
+        <div class="acc-row">
+          <div class="acc-pos">BTN</div>
+          <div class="acc-bar"><div class="acc-fill acc-fill--good" style="width:82%"></div></div>
+          <div class="acc-pct" style="color:var(--white)">82%</div>
+          <div class="acc-flag acc-flag--hidden"></div>
+        </div>
+        <div class="acc-row">
+          <div class="acc-pos">CO</div>
+          <div class="acc-bar"><div class="acc-fill acc-fill--mid" style="width:74%"></div></div>
+          <div class="acc-pct" style="color:var(--white-3)">74%</div>
+          <div class="acc-flag acc-flag--hidden"></div>
+        </div>
+        <div class="acc-row">
+          <div class="acc-pos">HJ</div>
+          <div class="acc-bar"><div class="acc-fill acc-fill--mid" style="width:61%"></div></div>
+          <div class="acc-pct" style="color:var(--white-3)">61%</div>
+          <div class="acc-flag acc-flag--hidden"></div>
+        </div>
+        <div class="acc-row">
+          <div class="acc-pos">UTG</div>
+          <div class="acc-bar"><div class="acc-fill acc-fill--bad" style="width:48%"></div></div>
+          <div class="acc-pct" style="color:var(--red)">48%</div>
+          <div class="acc-flag"></div>
+        </div>
+        <div class="acc-row">
+          <div class="acc-pos">SB</div>
+          <div class="acc-bar"><div class="acc-fill acc-fill--bad" style="width:55%"></div></div>
+          <div class="acc-pct" style="color:var(--red)">55%</div>
+          <div class="acc-flag"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       SCREEN 05 — POST-SESSION REVIEW
+  ═══════════════════════════════════════════════ -->
+  <div class="screen-head">
+    <span class="screen-num">05</span>
+    <span class="screen-name">Post-Session Review</span>
+  </div>
+
+  <div class="frame">
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="label" style="margin-bottom:10px">Hands</div>
+        <div class="stat-num">47</div>
+      </div>
+      <div class="stat-box">
+        <div class="label" style="margin-bottom:10px">Accuracy</div>
+        <div class="stat-num stat-num--green">74%</div>
+      </div>
+      <div class="stat-box">
+        <div class="label" style="margin-bottom:10px">EV Lost</div>
+        <div class="stat-num stat-num--red">−3.2<span style="font-size:18px">bb</span></div>
+      </div>
+    </div>
+
+    <div class="two-col" style="border-top:1px solid var(--line)">
+      <!-- Concept accuracy -->
+      <div style="padding:28px;border-right:1px solid var(--line)">
+        <div style="font-family:var(--f-sans);font-size:16px;margin-bottom:20px">Concept accuracy</div>
+        <div class="concept-row">
+          <svg style="width:12px;height:12px;color:var(--red);flex-shrink:0"><use href="#icon-flag"/></svg>
+          <div class="concept-name">3-Bet Sizing</div>
+          <div class="concept-bar-wrap"><div class="concept-bar" style="width:42%;background:var(--red)"></div></div>
+          <div class="concept-pct" style="color:var(--red)">42%</div>
+        </div>
+        <div class="concept-row">
+          <svg style="width:12px;height:12px;color:var(--red);flex-shrink:0"><use href="#icon-flag"/></svg>
+          <div class="concept-name">Fold Equity</div>
+          <div class="concept-bar-wrap"><div class="concept-bar" style="width:51%;background:var(--red)"></div></div>
+          <div class="concept-pct" style="color:var(--red)">51%</div>
+        </div>
+        <div class="concept-row">
+          <div style="width:12px;height:12px;flex-shrink:0"></div>
+          <div class="concept-name">Pot Odds</div>
+          <div class="concept-bar-wrap"><div class="concept-bar" style="width:68%;background:var(--white-3)"></div></div>
+          <div class="concept-pct" style="color:var(--white-3)">68%</div>
+        </div>
+        <div class="concept-row">
+          <div style="width:12px;height:12px;flex-shrink:0"></div>
+          <div class="concept-name">Value Raise</div>
+          <div class="concept-bar-wrap"><div class="concept-bar" style="width:81%;background:var(--white)"></div></div>
+          <div class="concept-pct" style="color:var(--white)">81%</div>
+        </div>
+        <div class="concept-row">
+          <div style="width:12px;height:12px;flex-shrink:0"></div>
+          <div class="concept-name">C-Bet</div>
+          <div class="concept-bar-wrap"><div class="concept-bar" style="width:77%;background:var(--white)"></div></div>
+          <div class="concept-pct" style="color:var(--white)">77%</div>
+        </div>
+        <div class="concept-row">
+          <div style="width:12px;height:12px;flex-shrink:0"></div>
+          <div class="concept-name">SPR</div>
+          <div class="concept-bar-wrap"><div class="concept-bar" style="width:70%;background:var(--white-3)"></div></div>
+          <div class="concept-pct" style="color:var(--white-3)">70%</div>
+        </div>
+      </div>
+
+      <!-- Hand history -->
+      <div style="padding:28px">
+        <div class="history-head">
+          <div style="font-family:var(--f-sans);font-size:16px;">Hand history</div>
+          <div class="label">47 hands this session</div>
+        </div>
+
+        <div class="replay-item" style="padding-top:16px">
+          <svg style="width:14px;height:14px;color:var(--green);flex-shrink:0"><use href="#icon-check"/></svg>
+          <div style="flex:1">
+            <div class="replay-hand">AA · Flop · BTN vs UTG</div>
+            <div class="replay-meta">Raise ¾ pot · 100bb</div>
+          </div>
+          <svg class="replay-arrow" style="color:var(--white-4)"><use href="#icon-replay"/></svg>
+        </div>
+        <div class="replay-item">
+          <svg style="width:14px;height:14px;color:var(--red);flex-shrink:0"><use href="#icon-cross"/></svg>
+          <div style="flex:1">
+            <div class="replay-hand">KQs · Turn · 3-bet pot · CO</div>
+            <div class="replay-meta">Sizing error · 80bb</div>
+          </div>
+          <svg class="replay-arrow" style="color:var(--white-4)"><use href="#icon-replay"/></svg>
+        </div>
+        <div class="replay-item">
+          <svg style="width:14px;height:14px;color:var(--green);flex-shrink:0"><use href="#icon-check"/></svg>
+          <div style="flex:1">
+            <div class="replay-hand">88 · Preflop · BTN vs 3-bet</div>
+            <div class="replay-meta">Mixed spot accepted · 100bb</div>
+          </div>
+          <svg class="replay-arrow" style="color:var(--white-4)"><use href="#icon-replay"/></svg>
+        </div>
+        <div class="replay-item">
+          <svg style="width:14px;height:14px;color:var(--red);flex-shrink:0"><use href="#icon-cross"/></svg>
+          <div style="flex:1">
+            <div class="replay-hand">A5s · Preflop · SB squeeze</div>
+            <div class="replay-meta">Fold equity miss · 100bb</div>
+          </div>
+          <svg class="replay-arrow" style="color:var(--white-4)"><use href="#icon-replay"/></svg>
+        </div>
+        <div class="replay-item">
+          <svg style="width:14px;height:14px;color:var(--green);flex-shrink:0"><use href="#icon-check"/></svg>
+          <div style="flex:1">
+            <div class="replay-hand">JTo · Preflop · MP vs BTN 3-bet</div>
+            <div class="replay-meta">Pot odds call · 120bb</div>
+          </div>
+          <svg class="replay-arrow" style="color:var(--white-4)"><use href="#icon-replay"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       SCREEN 06 — THEMES
+  ═══════════════════════════════════════════════ -->
+  <div class="screen-head">
+    <span class="screen-num">06</span>
+    <span class="screen-name">Visual Themes</span>
+  </div>
+
+  <div class="frame" style="overflow:visible">
+    <div class="theme-row">
+
+      <!-- Dark -->
+      <div class="theme-tile">
+        <div class="theme-preview" style="background:#050505">
+          <div style="position:absolute;width:110px;height:60px;border-radius:30px;border:1px solid rgba(255,255,255,0.07);background:radial-gradient(ellipse,#1C1C1C,#0C0C0C)"></div>
+          <div class="card" style="z-index:2;transform:rotate(-8deg) translateX(-4px)">
+            <span class="card-rank" style="color:var(--red)">A</span>
+            <svg class="card-suit-center" style="color:var(--red)"><use href="#suit-heart"/></svg>
+          </div>
+          <div class="card" style="z-index:2;transform:rotate(5deg) translateX(4px)">
+            <span class="card-rank">K</span>
+            <svg class="card-suit-center" style="color:var(--white-2)"><use href="#suit-spade"/></svg>
+          </div>
+        </div>
+        <div class="theme-foot" style="background:#0C0C0C">
+          <span class="theme-name" style="color:#F4F2EE">Dark Minimal</span>
+          <span class="theme-tag">Default</span>
+        </div>
+      </div>
+
+      <!-- Light -->
+      <div class="theme-tile theme-tile--selected">
+        <div class="theme-preview" style="background:#F0EBE0">
+          <div style="position:absolute;width:110px;height:60px;border-radius:30px;border:1px solid rgba(0,0,0,0.08);background:radial-gradient(ellipse,#E8E0D0,#D8CEBC)"></div>
+          <div class="card" style="z-index:2;transform:rotate(-8deg) translateX(-4px);background:#F5F0E8;border-color:rgba(0,0,0,0.1);box-shadow:0 4px 12px rgba(0,0,0,0.12)">
+            <span class="card-rank" style="color:#B83228">A</span>
+            <svg class="card-suit-center" style="color:#B83228"><use href="#suit-heart"/></svg>
+          </div>
+          <div class="card" style="z-index:2;transform:rotate(5deg) translateX(4px);background:#F5F0E8;border-color:rgba(0,0,0,0.1);box-shadow:0 4px 12px rgba(0,0,0,0.12)">
+            <span class="card-rank" style="color:#1A2E44">K</span>
+            <svg class="card-suit-center" style="color:#1A2E44"><use href="#suit-spade"/></svg>
+          </div>
+        </div>
+        <div class="theme-foot" style="background:#EDE8DF;border-top-color:rgba(0,0,0,0.07)">
+          <span class="theme-name" style="color:#1A2E44">Paper White</span>
+          <span class="theme-tag" style="color:#8A8070">Light</span>
+        </div>
+      </div>
+
+      <!-- Felt -->
+      <div class="theme-tile">
+        <div class="theme-preview" style="background:#0A1810">
+          <div style="position:absolute;width:110px;height:60px;border-radius:30px;border:1px solid rgba(255,255,255,0.06);background:radial-gradient(ellipse,#1B4030,#0A1810)"></div>
+          <div class="card" style="z-index:2;transform:rotate(-8deg) translateX(-4px);background:#161612;border-color:rgba(255,255,255,0.1)">
+            <span class="card-rank" style="color:#C8382A">A</span>
+            <svg class="card-suit-center" style="color:#C8382A"><use href="#suit-heart"/></svg>
+          </div>
+          <div class="card" style="z-index:2;transform:rotate(5deg) translateX(4px);background:#161612;border-color:rgba(255,255,255,0.1)">
+            <span class="card-rank" style="color:#E8DFB8">K</span>
+            <svg class="card-suit-center" style="color:#E8DFB8"><use href="#suit-spade"/></svg>
+          </div>
+        </div>
+        <div class="theme-foot" style="background:#0C1A0F;border-top-color:rgba(255,255,255,0.06)">
+          <span class="theme-name" style="color:#C8B87A">Felt Green</span>
+          <span class="theme-tag" style="color:#4A6040">Casino</span>
+        </div>
+      </div>
+
+      <!-- Neon -->
+      <div class="theme-tile">
+        <div class="theme-preview" style="background:#04040A">
+          <div style="position:absolute;width:110px;height:60px;border-radius:30px;border:1px solid rgba(200,255,220,0.08);background:radial-gradient(ellipse,#0A0A14,#04040A)"></div>
+          <div class="card" style="z-index:2;transform:rotate(-8deg) translateX(-4px);background:#0A0A12;border-color:rgba(200,255,220,0.12)">
+            <span class="card-rank" style="color:#E04070">A</span>
+            <svg class="card-suit-center" style="color:#E04070"><use href="#suit-heart"/></svg>
+          </div>
+          <div class="card" style="z-index:2;transform:rotate(5deg) translateX(4px);background:#0A0A12;border-color:rgba(200,255,220,0.12)">
+            <span class="card-rank" style="color:#C8F0D8">K</span>
+            <svg class="card-suit-center" style="color:#C8F0D8"><use href="#suit-spade"/></svg>
+          </div>
+        </div>
+        <div class="theme-foot" style="background:#060610;border-top-color:rgba(200,255,220,0.08)">
+          <span class="theme-name" style="color:#A0D8B8">Neon</span>
+          <span class="theme-tag" style="color:#405048">Cyberpunk</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>
