@@ -10,13 +10,15 @@ import { ReviewView } from './components/views/ReviewView';
 import { ThemesView } from './components/views/ThemesView';
 import { streetLabel } from './components/views/reviewFormat';
 import { useGameStore } from './store/gameStore';
-import type { Position } from './engine/types';
+import type { CardAnimationState, Position } from './engine/types';
 import {
   computeAccuracyPercent,
   computeStreak,
 } from './lib/sessionStats';
 import { hydrateThemeFromStorage } from './theme/themeController';
 import './styles/global.css';
+
+const CARD_STAGGER = 0.1;
 
 const OPPONENT_POSITIONS: Position[] = ['CO', 'HJ', 'MP', 'UTG', 'SB', 'BB'];
 
@@ -48,6 +50,22 @@ function App() {
   } = useGameStore();
 
   const trainingMode = mode === 'decision' || mode === 'freeplay';
+
+  const [cardAnimState, setCardAnimState] = useState<CardAnimationState>('idle');
+
+  useEffect(() => {
+    if (gamePhase === 'playing' && currentScenario) {
+      setCardAnimState('dealing');
+      const totalPlayers = currentScenario.activePlayers;
+      const lastCardDelay = (2 * totalPlayers - 1) * CARD_STAGGER;
+      const settleDuration = lastCardDelay + 0.6;
+      const timer = setTimeout(() => {
+        setCardAnimState('idle');
+      }, settleDuration * 1000);
+      return () => clearTimeout(timer);
+    }
+    setCardAnimState('idle');
+  }, [gamePhase, currentScenario]);
 
   const buildPlayers = useMemo((): PlayerData[] => {
     if (!currentScenario) return [];
@@ -222,10 +240,19 @@ function App() {
                           players={buildPlayers}
                           communityCards={currentScenario.communityCards}
                           pot={currentScenario.pot}
-                          animationState={gamePhase === 'playing' ? 'dealing' : 'idle'}
+                          animationState={cardAnimState}
                         />
                       </div>
 
+                      {gamePhase === 'playing' && (
+                        <ActionPanel
+                          variant="pokeriq"
+                          pot={currentScenario.pot}
+                          callSize={currentScenario.callSize}
+                          stackSize={currentScenario.stackSize}
+                          onAction={submitAction}
+                        />
+                      )}
                     </>
                   )}
                 </div>
@@ -269,15 +296,6 @@ function App() {
           </div>
         )}
 
-        {trainingMode && gamePhase === 'playing' && currentScenario && (
-          <ActionPanel
-            variant="pokeriq"
-            pot={currentScenario.pot}
-            callSize={currentScenario.callSize}
-            stackSize={currentScenario.stackSize}
-            onAction={submitAction}
-          />
-        )}
       </div>
 
       {error && (
