@@ -13,6 +13,7 @@ interface PlayerSeatProps {
   faceDown?: boolean;
   animationState?: CardAnimationState;
   dealDelay?: number;
+  dealDelay2?: number;
   playerIndex?: number;
 }
 
@@ -27,6 +28,7 @@ export function PlayerSeat({
   faceDown = true,
   animationState = 'idle',
   dealDelay = 0,
+  dealDelay2,
   playerIndex = 0,
 }: PlayerSeatProps) {
   return (
@@ -76,7 +78,7 @@ export function PlayerSeat({
                 rank={faceDown ? undefined : (cards[1][0] as any)}
                 faceDown={faceDown}
                 animationState={animationState}
-                delay={dealDelay + 0.08}
+                delay={dealDelay2 ?? dealDelay + 0.08}
                 size={isHero ? 'md' : 'sm'}
                 index={1}
                 isHero={isHero}

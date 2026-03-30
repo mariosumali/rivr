@@ -5,11 +5,13 @@ import './CommunityCards.css';
 interface CommunityCardsProps {
   cards: CardType[];
   animationState?: CardAnimationState;
+  baseDelay?: number;
 }
 
 export function CommunityCards({
   cards,
   animationState = 'idle',
+  baseDelay = 0,
 }: CommunityCardsProps) {
   const slots = Array.from({ length: 5 }, (_, i) => cards[i] ?? null);
 
@@ -23,7 +25,7 @@ export function CommunityCards({
               suit={card[1] as any}
               faceDown={false}
               animationState={animationState}
-              delay={i * 0.08}
+              delay={baseDelay + i * 0.1}
               size="sm"
             />
           ) : (
