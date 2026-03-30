@@ -27,6 +27,8 @@ export interface AdjudicationData {
   isMixed: boolean;
   mixedFrequencies?: { action: ActionType; frequency: number }[];
   conceptTags: string[];
+  /** Present when API returns equity (rivr server ≥ current). */
+  heroEquity?: number;
   potOdds: { required: number } | null;
 }
 
@@ -53,6 +55,8 @@ interface GameStore {
   loadScenario: () => Promise<void>;
   submitAction: (action: ActionType, sizing?: number) => Promise<void>;
   nextHand: () => Promise<void>;
+  /** Abandon current hand and deal a new one (no history entry). */
+  skipHand: () => Promise<void>;
   reset: () => void;
 }
 
@@ -129,6 +133,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   nextHand: async () => {
+    await get().loadScenario();
+  },
+
+  skipHand: async () => {
     await get().loadScenario();
   },
 
