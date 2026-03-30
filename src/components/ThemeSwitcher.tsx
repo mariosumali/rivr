@@ -1,35 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useTheme } from '../hooks/useTheme';
+import type { ThemeId } from '../theme/themeController';
 
-type ThemeId = 'dark' | 'light' | 'felt' | 'neon';
-
-const THEMES: { id: ThemeId; label: string; swatch: string }[] = [
+const SWATCHES: { id: ThemeId; label: string; swatch: string }[] = [
   { id: 'dark', label: 'Dark', swatch: '#1a1a1a' },
   { id: 'light', label: 'Paper', swatch: '#f5f0e8' },
   { id: 'felt', label: 'Felt', swatch: '#1b4d2e' },
   { id: 'neon', label: 'Neon', swatch: '#00ff88' },
 ];
 
-function getStoredTheme(): ThemeId {
-  try {
-    const stored = localStorage.getItem('rivr-theme');
-    if (stored && THEMES.some((t) => t.id === stored)) return stored as ThemeId;
-  } catch {}
-  return 'dark';
-}
-
+/** Compact swatches — prefer Themes screen in the app shell for full previews. */
 export function ThemeSwitcher() {
-  const [theme, setTheme] = useState<ThemeId>(getStoredTheme);
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('rivr-theme', theme);
-  }, [theme]);
+  const { theme, setTheme } = useTheme();
 
   return (
     <div style={styles.container}>
-      {THEMES.map((t) => (
+      {SWATCHES.map((t) => (
         <button
           key={t.id}
+          type="button"
           onClick={() => setTheme(t.id)}
           title={t.label}
           style={{
