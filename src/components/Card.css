@@ -1,13 +1,23 @@
-/* ================================================================
-   CardComponent — CSS 3D Transform System
-   PRD Section 6.1 & 6.2: GPU-accelerated card physics
-   ================================================================ */
+/* Card — filled suits, dark face, soft border */
 
 .card-perspective {
   perspective: 800px;
-  width: 72px;
-  height: 100px;
   flex-shrink: 0;
+}
+
+.card-perspective--sm {
+  width: 56px;
+  height: 80px;
+}
+
+.card-perspective--md {
+  width: 80px;
+  height: 112px;
+}
+
+.card-perspective--lg {
+  width: 100px;
+  height: 140px;
 }
 
 .card-inner {
@@ -36,97 +46,77 @@
   inset: 0;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  border-radius: var(--radius-card);
+  border-radius: 8px;
   overflow: hidden;
 }
 
 .card-face--front {
-  background-color: var(--color-card-face);
-  box-shadow: var(--shadow-card);
+  background: var(--color-card-face, #111);
+  border: 1px solid var(--color-card-border, rgba(255, 255, 255, 0.12));
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 6px;
-  border: 1px solid var(--color-border);
+  align-items: center;
+  justify-content: center;
 }
 
 .card-face--back {
-  background-color: var(--color-card-back);
-  box-shadow: var(--shadow-card);
+  background: var(--color-card-back, #0a0a0a);
+  border: 1px solid var(--color-card-border, rgba(255, 255, 255, 0.12));
   transform: rotateY(180deg);
-  border: 1px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .card-back-pattern {
-  width: calc(100% - 10px);
-  height: calc(100% - 10px);
-  border-radius: calc(var(--radius-card) - 3px);
-  border: 1.5px solid var(--color-accent);
-  opacity: 0.6;
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+  border-radius: 4px;
   background: repeating-linear-gradient(
     45deg,
     transparent,
-    transparent 4px,
-    var(--color-accent) 4px,
-    var(--color-accent) 4.5px
+    transparent 3px,
+    var(--color-card-border, rgba(255, 255, 255, 0.06)) 3px,
+    var(--color-card-border, rgba(255, 255, 255, 0.06)) 3.5px
   );
+  opacity: 0.4;
 }
 
-/* Corner */
-.card-corner {
+/* Rank + suit vertical stack */
+.card-content {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 2px;
   line-height: 1;
-  gap: 0;
-}
-
-.card-corner--bottom {
-  transform: rotate(180deg);
 }
 
 .card-rank {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 1;
+  font-family: var(--piq-font, var(--font-display, system-ui));
+  font-weight: 500;
+  letter-spacing: -0.02em;
 }
 
-.card-suit-symbol {
-  font-size: 11px;
-  line-height: 1;
+.card-perspective--sm .card-rank { font-size: 18px; }
+.card-perspective--md .card-rank { font-size: 26px; }
+.card-perspective--lg .card-rank { font-size: 34px; }
+
+.card-suit-svg {
+  display: block;
 }
 
-/* Center suit */
-.card-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-}
+.card-perspective--sm .card-suit-svg { width: 20px; height: 20px; }
+.card-perspective--md .card-suit-svg { width: 28px; height: 28px; }
+.card-perspective--lg .card-suit-svg { width: 36px; height: 36px; }
 
-.card-center-symbol {
-  font-size: 26px;
-  opacity: 0.5;
-}
-
-/* Suit color classes */
+/* Suit colors — hearts/diamonds red, clubs/spades light */
 .card-suit--dark {
-  color: var(--color-suit-dark);
+  color: var(--color-suit-dark, rgba(255, 255, 255, 0.65));
 }
 
 .card-suit--heart {
-  color: var(--color-suit-heart);
+  color: var(--color-suit-heart, #c0392b);
 }
 
 .card-suit--diamond {
-  color: var(--color-suit-diamond);
-}
-
-/* Hover state handled by Framer Motion — shadow deepens via CSS */
-.card-perspective:hover .card-face--front {
-  box-shadow: var(--shadow-card-hover);
+  color: var(--color-suit-diamond, #c0392b);
 }
