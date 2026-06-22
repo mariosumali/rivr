@@ -82,7 +82,7 @@ app.post('/api/scenario/generate', (req, res) => {
  */
 app.post('/api/scenario/adjudicate', (req, res) => {
   try {
-    const { scenarioId, gameState: rawGameState, userAction, userSizing } = req.body;
+    const { scenarioId, gameState: rawGameState, userAction, userSizing, difficulty } = req.body;
 
     if (!userAction || !VALID_ACTIONS.includes(userAction)) {
       res.status(400).json({
@@ -104,10 +104,11 @@ app.post('/api/scenario/adjudicate', (req, res) => {
       return;
     }
 
-    const result = adjudicate(gameState);
+    const result = adjudicate(gameState, { suppressMixed: difficulty === 1 });
+    const skipSizing = difficulty === 1;
     const verdict = checkUserAction(
       userAction as ActionType,
-      userSizing,
+      skipSizing ? undefined : userSizing,
       result,
     );
 
