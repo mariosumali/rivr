@@ -6,8 +6,8 @@
   --color-table: #050505;
   --color-table-line: rgba(255, 255, 255, 0.15);
   --color-surface: #0a0a0a;
-  --color-card-face: #060606;
-  --color-card-back: #040404;
+  --color-card-face: #000000;
+  --color-card-back: #000000;
   --color-card-border: rgba(255, 255, 255, 0.18);
   --color-accent: #ffffff;
   --color-accent-glow: rgba(255, 255, 255, 0.1);
@@ -42,8 +42,8 @@
   --color-table: #e8e0d0;
   --color-table-line: rgba(0, 0, 0, 0.12);
   --color-surface: #f5f0e8;
-  --color-card-face: #f5f0e8;
-  --color-card-back: #d8d0c0;
+  --color-card-face: #faf7f2;
+  --color-card-back: #faf7f2;
   --color-card-border: rgba(0, 0, 0, 0.15);
   --color-accent: #1a1a1a;
   --color-accent-glow: rgba(0, 0, 0, 0.08);
@@ -72,8 +72,8 @@
   --color-table: #0a1a0f;
   --color-table-line: rgba(255, 255, 255, 0.1);
   --color-surface: #0a0a0a;
-  --color-card-face: #080808;
-  --color-card-back: #060806;
+  --color-card-face: #060d08;
+  --color-card-back: #060d08;
   --color-card-border: rgba(255, 255, 255, 0.14);
   --color-accent: #d4af37;
   --color-accent-glow: rgba(212, 175, 55, 0.15);
@@ -102,7 +102,7 @@
   --color-table: #040408;
   --color-table-line: rgba(0, 255, 136, 0.12);
   --color-surface: #060608;
-  --color-card-face: #040406;
+  --color-card-face: #020204;
   --color-card-back: #020204;
   --color-card-border: rgba(0, 255, 136, 0.2);
   --color-accent: #00ff88;

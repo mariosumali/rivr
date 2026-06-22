@@ -4,6 +4,7 @@ import {
   computeAccuracyPercent,
   computeStreak,
   computeEvLostBb,
+  computeWeakSpots,
 } from '../../lib/sessionStats';
 
 interface SidebarProps {
@@ -24,6 +25,7 @@ export function Sidebar({ mode, onModeChange, sessionHistory, difficulty }: Side
   const acc = computeAccuracyPercent(sessionHistory);
   const streak = computeStreak(sessionHistory);
   const evLost = computeEvLostBb(sessionHistory);
+  const weakSpots = computeWeakSpots(sessionHistory);
 
   return (
     <aside className="piq-sidebar">
@@ -104,16 +106,19 @@ export function Sidebar({ mode, onModeChange, sessionHistory, difficulty }: Side
 
       <div className="piq-sidebar__section piq-sidebar__section--weak">
         <div className="piq-sidebar__lbl">Weak spots</div>
-        <div className="piq-weak-row">
-          <span style={{ color: 'var(--piq-danger)' }}>▼</span>
-          <span>3-Bet Sizing</span>
-          <span>42%</span>
-        </div>
-        <div className="piq-weak-row">
-          <span style={{ color: 'var(--piq-danger)' }}>▼</span>
-          <span>Fold Equity</span>
-          <span>51%</span>
-        </div>
+        {weakSpots.length === 0 ? (
+          <p className="piq-weak-empty">
+            {hands < 3 ? 'Play a few hands to surface weak concepts.' : 'No weak concepts — nice.'}
+          </p>
+        ) : (
+          weakSpots.map((w) => (
+            <div key={w.name} className="piq-weak-row">
+              <span style={{ color: 'var(--piq-danger)' }}>▼</span>
+              <span>{w.name}</span>
+              <span>{w.pct}%</span>
+            </div>
+          ))
+        )}
       </div>
     </aside>
   );
