@@ -9,6 +9,12 @@ import type {
 
 const MIXED_STRATEGY_THRESHOLD_BB = 0.5;
 
+export interface AdjudicateOptions {
+  iterations?: number;
+  /** Beginner mode: never present a spot as mixed (PRD §5.1, level 1). */
+  suppressMixed?: boolean;
+}
+
 /**
  * Adjudicate a game state: determine the mathematically correct action.
  *
@@ -22,8 +28,12 @@ const MIXED_STRATEGY_THRESHOLD_BB = 0.5;
  */
 export function adjudicate(
   state: GameState,
-  iterations: number = 10000,
+  options: AdjudicateOptions | number = {},
 ): AdjudicationResult {
+  const opts: AdjudicateOptions =
+    typeof options === 'number' ? { iterations: options } : options;
+  const iterations = opts.iterations ?? 10000;
+
   const { heroHand, communityCards, pot, callSize, stackSize, villainRange } =
     state;
 
@@ -39,13 +49,7 @@ export function adjudicate(
 
   const evFold = 0;
   const evCall = computeCallEV(equity.heroEquity, pot, callSize);
-  const evRaise = computeRaiseEV(
-    equity.heroEquity,
-    pot,
-    callSize,
-    stackSize,
-    spr,
-  );
+  const evRaise = computeRaiseEV(equity.heroEquity, pot, callSize, stackSize, spr);
 
   const evByAction: Record<ActionType, number> = {
     fold: evFold,
@@ -57,10 +61,8 @@ export function adjudicate(
   const actions = rankActions(evByAction, callSize);
   const recommendedAction = actions[0].action;
 
-  const isMixed = checkMixed(actions);
-  const mixedFrequencies = isMixed
-    ? computeMixedFrequencies(actions)
-    : undefined;
+  const isMixed = opts.suppressMixed ? false : checkMixed(actions);
+  const mixedFrequencies = isMixed ? computeMixedFrequencies(actions) : undefined;
 
   const sizingRange = computeSizingRange(pot, callSize, stackSize, spr);
   const conceptTags = tagConcepts(state, equity.heroEquity, potOdds, spr, isMixed);
@@ -76,13 +78,9 @@ export function adjudicate(
   };
 }
 
-function computeCallEV(
-  heroEquity: number,
-  pot: number,
-  callSize: number,
-): number {
-  // EV(call) = equity * (pot + callSize) - callSize
-  // This is the expected profit/loss from calling
+function computeCallEV(heroEquity: number, pot: number, callSize: number): number {
+  // EV(call) = equity * (pot + callSize) - callSize.
+  // The expected chips gained by calling and realizing equity at showdown.
   return heroEquity * (pot + callSize) - callSize;
 }
 
@@ -93,37 +91,39 @@ function computeRaiseEV(
   stackSize: number,
   spr: number,
 ): number {
-  // Standard raise size: 2.5x the call size for preflop, ~70% pot postflop
-  const raiseSize = callSize > 0 ? Math.min(callSize * 2.5, stackSize) : pot * 0.7;
+  const raiseSize =
+    callSize > 0 ? Math.min(callSize * 2.5, stackSize) : Math.min(pot * 0.7, stackSize);
   if (raiseSize <= 0) return 0;
 
-  // Estimate fold equity based on SPR and raise size
   const foldEquity = estimateFoldEquity(raiseSize, pot, spr);
 
-  // EV(raise) = fold% * pot + (1 - fold%) * (equity * (pot + raiseSize + callSize) - raiseSize)
-  const evWhenCalled =
-    heroEquity * (pot + raiseSize * 2) - raiseSize;
+  // When villain continues, they do so with the *top* of their range — so hero
+  // realizes less than raw equity. Approximate the continuing-range equity by
+  // removing the folded fraction (hands hero beat ~70% of the time).
+  const equityWhenCalled =
+    foldEquity >= 1
+      ? heroEquity
+      : Math.max(0, Math.min(1, (heroEquity - foldEquity * 0.7) / (1 - foldEquity)));
 
-  return foldEquity * pot + (1 - foldEquity) * evWhenCalled;
+  const evWhenCalled = equityWhenCalled * (pot + raiseSize * 2) - raiseSize;
+  // Raising bloats the pot and invites re-raises; a small risk premium keeps the
+  // model from preferring thin 3-bets over a clean, lower-variance call.
+  const reraiseRisk = 0.12 * raiseSize * (1 - foldEquity);
+  return foldEquity * pot + (1 - foldEquity) * evWhenCalled - reraiseRisk;
 }
 
-function estimateFoldEquity(
-  raiseSize: number,
-  pot: number,
-  spr: number,
-): number {
-  // Larger raises relative to pot generate more fold equity
+function estimateFoldEquity(raiseSize: number, pot: number, spr: number): number {
   const raiseToPot = pot > 0 ? raiseSize / pot : 0;
 
-  // Base fold equity from raise sizing (larger = more folds)
-  let foldPct = Math.min(0.6, raiseToPot * 0.25);
+  // Larger raises (relative to pot) fold out more of villain's range.
+  let foldPct = Math.min(0.45, raiseToPot * 0.18);
 
-  // Low SPR reduces fold equity (opponents are committed)
-  if (spr < 2) foldPct *= 0.3;
-  else if (spr < 4) foldPct *= 0.6;
-  else if (spr < 8) foldPct *= 0.85;
+  // Low SPR → opponents are pot-committed and fold far less.
+  if (spr < 2) foldPct *= 0.25;
+  else if (spr < 4) foldPct *= 0.55;
+  else if (spr < 8) foldPct *= 0.8;
 
-  return Math.max(0, Math.min(0.8, foldPct));
+  return Math.max(0, Math.min(0.75, foldPct));
 }
 
 interface RankedAction {
@@ -135,51 +135,32 @@ function rankActions(
   evByAction: Record<ActionType, number>,
   callSize: number,
 ): RankedAction[] {
-  const candidates: RankedAction[] = [];
-
-  candidates.push({ action: 'fold', ev: evByAction.fold });
-
-  if (callSize === 0) {
-    candidates.push({ action: 'check', ev: evByAction.check });
-  } else {
-    candidates.push({ action: 'call', ev: evByAction.call });
-  }
-
+  const candidates: RankedAction[] = [{ action: 'fold', ev: evByAction.fold }];
+  if (callSize === 0) candidates.push({ action: 'check', ev: evByAction.check });
+  else candidates.push({ action: 'call', ev: evByAction.call });
   candidates.push({ action: 'raise', ev: evByAction.raise });
-
   return candidates.sort((a, b) => b.ev - a.ev);
 }
 
 function checkMixed(actions: RankedAction[]): boolean {
   if (actions.length < 2) return false;
+  // A spot is only "mixed" when both top actions are non-trivially +EV — folding
+  // a clearly losing call isn't a mixed strategy, it's just a fold.
+  if (actions[0].ev <= 0.1) return false;
   const diff = Math.abs(actions[0].ev - actions[1].ev);
   return diff <= MIXED_STRATEGY_THRESHOLD_BB;
 }
 
-function computeMixedFrequencies(
-  actions: RankedAction[],
-): MixedFrequency[] {
-  // When two actions are close in EV, assign frequencies proportional to EV advantage
+function computeMixedFrequencies(actions: RankedAction[]): MixedFrequency[] {
   const top = actions[0];
   const second = actions[1];
-  const totalEv = Math.abs(top.ev) + Math.abs(second.ev);
-
-  let topFreq: number;
-  if (totalEv === 0) {
-    topFreq = 0.5;
-  } else {
-    // Small EV difference → closer to 50/50. Larger → skew toward better action.
-    const diff = top.ev - second.ev;
-    topFreq = 0.5 + (diff / (MIXED_STRATEGY_THRESHOLD_BB * 2)) * 0.3;
-    topFreq = Math.max(0.35, Math.min(0.65, topFreq));
-  }
+  const diff = top.ev - second.ev;
+  let topFreq = 0.5 + (diff / (MIXED_STRATEGY_THRESHOLD_BB * 2)) * 0.3;
+  topFreq = Math.max(0.35, Math.min(0.65, topFreq));
 
   return [
     { action: top.action, frequency: Math.round(topFreq * 100) / 100 },
-    {
-      action: second.action,
-      frequency: Math.round((1 - topFreq) * 100) / 100,
-    },
+    { action: second.action, frequency: Math.round((1 - topFreq) * 100) / 100 },
   ];
 }
 
@@ -190,24 +171,18 @@ function computeSizingRange(
   spr: number,
 ): SizingRange {
   if (spr <= 1) {
-    // Low SPR → all-in is the correct raise size
     return { min: stackSize, max: stackSize };
   }
 
-  // Standard raise sizing: 60-80% of pot postflop, 2.5-3x preflop
   let optimalRaise: number;
   if (callSize > 0 && pot <= callSize * 3) {
-    // Preflop-like sizing
-    optimalRaise = callSize * 2.5;
+    optimalRaise = callSize * 2.5; // preflop-like
   } else {
-    // Postflop sizing
-    optimalRaise = pot * 0.7;
+    optimalRaise = pot * 0.7; // postflop
   }
-
   optimalRaise = Math.min(optimalRaise, stackSize);
 
-  // Tolerance: ±15% per PRD Section 4.3
-  const tolerance = 0.15;
+  const tolerance = 0.15; // PRD §4.3
   return {
     min: Math.max(callSize > 0 ? callSize * 2 : 1, optimalRaise * (1 - tolerance)),
     max: Math.min(stackSize, optimalRaise * (1 + tolerance)),
@@ -223,33 +198,27 @@ function tagConcepts(
 ): string[] {
   const tags: string[] = [];
 
-  if (state.callSize > 0) {
-    tags.push('Pot Odds');
-  }
-
+  if (state.callSize > 0) tags.push('Pot Odds');
   tags.push('Equity');
-
-  if (spr < 4) {
-    tags.push('SPR');
-  }
+  if (spr < 4) tags.push('SPR');
 
   if (state.street === 'preflop') {
-    if (state.callSize > 0 && state.activePlayers <= 2) {
-      tags.push('3-Bet');
-    }
+    if (state.villainAction === '3bet') tags.push('4-Bet / 3-Bet Defense');
+    else if (state.position === 'SB' || state.position === 'BB') tags.push('Blind Defense');
+    else tags.push('Open / Iso');
+  } else if (state.callSize === 0) {
+    tags.push('C-Bet');
   } else {
-    if (state.callSize === 0) {
-      tags.push('C-Bet');
-    }
+    tags.push('Bet Defense');
   }
 
-  if (heroEquity < potOdds && state.callSize > 0) {
+  if (state.callSize > 0 && heroEquity >= potOdds - 0.03 && heroEquity <= potOdds + 0.05) {
+    tags.push('Marginal Call');
+  }
+  if (heroEquity > potOdds && state.callSize > 0 && spr > 4) {
     tags.push('Fold Equity');
   }
-
-  if (isMixed) {
-    tags.push('Mixed Strategy');
-  }
+  if (isMixed) tags.push('Mixed Strategy');
 
   return tags;
 }
@@ -263,17 +232,15 @@ export function checkUserAction(
   userSizing: number | undefined,
   result: AdjudicationResult,
 ): { correct: boolean; reason: string } {
-  // Check if action matches
   if (result.isMixed && result.mixedFrequencies) {
     const acceptedActions = result.mixedFrequencies.map((mf) => mf.action);
     if (!acceptedActions.includes(userAction)) {
       return {
         correct: false,
-        reason: `Incorrect action. In this mixed spot, acceptable actions are: ${acceptedActions.join(', ')}`,
+        reason: `In this mixed spot, GTO plays ${acceptedActions.join(' / ')} — your ${userAction} is the lower-EV option here.`,
       };
     }
   } else if (userAction !== result.recommendedAction) {
-    // Allow check/call equivalence when callSize is 0
     if (
       !(
         (userAction === 'check' && result.recommendedAction === 'call') ||
@@ -282,21 +249,20 @@ export function checkUserAction(
     ) {
       return {
         correct: false,
-        reason: `Incorrect action. The correct play is ${result.recommendedAction}.`,
+        reason: `The mathematically correct play is to ${result.recommendedAction}.`,
       };
     }
   }
 
-  // Check sizing if the user raised
   if (userAction === 'raise' && userSizing !== undefined) {
     const { min, max } = result.sizingRange;
     if (userSizing < min || userSizing > max) {
       return {
         correct: false,
-        reason: `Correct action but incorrect sizing. Optimal raise is between ${min.toFixed(1)} and ${max.toFixed(1)}.`,
+        reason: `Right action, wrong size — the optimal raise is ${min.toFixed(1)}–${max.toFixed(1)}bb.`,
       };
     }
   }
 
-  return { correct: true, reason: 'Correct!' };
+  return { correct: true, reason: 'Correct — this maximizes EV.' };
 }
