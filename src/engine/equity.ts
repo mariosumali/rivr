@@ -203,3 +203,61 @@ export function calculateEquity(
     ties: ties / iterations,
   };
 }
+
+/**
+ * Estimate a hand's strength as equity vs a single uniformly random hand.
+ * Client-safe (no pokersolver) — used by the Free Play bot and hero gauge.
+ */
+export function equityVsRandom(
+  hole: [Card, Card],
+  board: Card[] = [],
+  iterations: number = 300,
+): number {
+  const dead = new Set<Card>([...hole, ...board]);
+  const need = 5 - board.length;
+  let score = 0;
+  for (let i = 0; i < iterations; i++) {
+    const deck = buildDeck().filter((c) => !dead.has(c));
+    shuffleArray(deck);
+    const villain = [deck[0], deck[1]];
+    const runout = deck.slice(2, 2 + need);
+    const full = [...board, ...runout];
+    const hs = bestHandScore([...hole, ...full]);
+    const vs = bestHandScore([...villain, ...full]);
+    if (hs > vs) score += 1;
+    else if (hs === vs) score += 0.5;
+  }
+  return score / iterations;
+}
+
+/** Decide a showdown between two made hands on a complete (5-card) board. */
+export function showdownWinner(
+  heroHole: [Card, Card],
+  villainHole: [Card, Card],
+  board: Card[],
+): 'hero' | 'villain' | 'split' {
+  const hs = bestHandScore([...heroHole, ...board]);
+  const vs = bestHandScore([...villainHole, ...board]);
+  if (hs > vs) return 'hero';
+  if (vs > hs) return 'villain';
+  return 'split';
+}
+
+/** Human-readable category name for a 5–7 card hand (client-safe). */
+export function handCategoryName(cards: Card[]): string {
+  const score = bestHandScore(cards);
+  const category = score >> 20;
+  return HAND_CATEGORY_NAMES[category] ?? 'High Card';
+}
+
+const HAND_CATEGORY_NAMES: Record<number, string> = {
+  0: 'High Card',
+  1: 'Pair',
+  2: 'Two Pair',
+  3: 'Three of a Kind',
+  4: 'Straight',
+  5: 'Flush',
+  6: 'Full House',
+  7: 'Four of a Kind',
+  8: 'Straight Flush',
+};
