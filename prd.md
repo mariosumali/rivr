@@ -21,11 +21,11 @@
 
 ## 1. Overview
 
-PokerIQ is a web-based poker training application that teaches mathematically correct decision-making in Texas Hold'Em. Players are placed into realistic game states and must make the optimal action — fold, call, or raise to the correct size — grounded entirely in expected value, equity, and pot odds.
+rivr is a web-based poker training application that teaches mathematically correct decision-making in Texas Hold'Em. Players are placed into realistic game states and must make the optimal action — fold, call, or raise to the correct size — grounded entirely in expected value, equity, and pot odds.
 
-The teaching philosophy is **math-first**: correctness is defined by EV calculation, not opinion or heuristic. Explanations exist to help users understand the math — not to replace it. PokerIQ is not a casual poker game. It is a deliberate practice environment built for players who want to improve.
+The teaching philosophy is **math-first**: correctness is defined by EV calculation, not opinion or heuristic. Explanations exist to help users understand the math — not to replace it. rivr is not a casual poker game. It is a deliberate practice environment built for players who want to improve.
 
-> **Core Principle:** Every correct answer in PokerIQ has a mathematical justification. The feedback layer exists to teach users how to arrive at that answer themselves — through pot odds, equity estimation, and EV reasoning — not to provide a shortcut around it.
+> **Core Principle:** Every correct answer in rivr has a mathematical justification. The feedback layer exists to teach users how to arrive at that answer themselves — through pot odds, equity estimation, and EV reasoning — not to provide a shortcut around it.
 
 ---
 
@@ -36,7 +36,7 @@ Learning optimal poker strategy is hard for a specific structural reason: **the 
 - **Static tools** (charts, solvers, books) teach you what is correct but give you no practice applying it under game conditions.
 - **Actual play** gives you practice but almost no reliable feedback — outcomes are noisy, spots are unrepeatable, and bad decisions can still win.
 
-No mainstream tool lets players practice decision-making in procedurally generated, mathematically grounded game states with immediate, explanation-driven feedback on every hand. PokerIQ closes this gap.
+No mainstream tool lets players practice decision-making in procedurally generated, mathematically grounded game states with immediate, explanation-driven feedback on every hand. rivr closes this gap.
 
 ---
 
@@ -61,7 +61,7 @@ No mainstream tool lets players practice decision-making in procedurally generat
 
 ## 4. Mathematical Framework
 
-This section defines how PokerIQ determines the "correct" action for any game state. All correctness logic runs on the backend; the frontend is purely display.
+This section defines how rivr determines the "correct" action for any game state. All correctness logic runs on the backend; the frontend is purely display.
 
 ### 4.1 Correct Action Pipeline
 
@@ -75,9 +75,9 @@ This section defines how PokerIQ determines the "correct" action for any game st
 
 ### 4.2 Mixed Strategy Handling
 
-GTO frequently prescribes mixed strategies — spots where two actions (e.g. raise and call) are near-indifferent in EV. PokerIQ handles these as follows:
+GTO frequently prescribes mixed strategies — spots where two actions (e.g. raise and call) are near-indifferent in EV. rivr handles these as follows:
 
-> **Mixed Strategy Policy:** When two actions have EV within a defined threshold (default: ±0.5bb), PokerIQ treats both as correct. The feedback panel displays the GTO frequency split (e.g. *Raise 55% / Call 45%*), marks the user's answer as correct, and explains why the spot is near-indifferent. This is shown as a teaching moment — not a gotcha.
+> **Mixed Strategy Policy:** When two actions have EV within a defined threshold (default: ±0.5bb), rivr treats both as correct. The feedback panel displays the GTO frequency split (e.g. *Raise 55% / Call 45%*), marks the user's answer as correct, and explains why the spot is near-indifferent. This is shown as a teaching moment — not a gotcha.
 
 - Mixed spots are tagged with a **Mixed Strategy** badge in the feedback panel
 - EV differential between actions is always shown numerically (e.g. *Raise EV: +1.8bb  |  Call EV: +1.6bb*)
@@ -178,7 +178,7 @@ A full simulated hand from preflop to showdown. Opponent archetypes produce real
 
 ## 6. UI, Animation & Theming
 
-PokerIQ's visual identity is deliberately non-casino. The default aesthetic is inspired by minimalist, matte playing card design — dark surfaces, geometric suit symbols, tight typography, and purposeful negative space. Animations are not decorative. They carry meaning: a card flip communicates a reveal; a deal sequence communicates turn order.
+rivr's visual identity is deliberately non-casino. The default aesthetic is inspired by minimalist, matte playing card design — dark surfaces, geometric suit symbols, tight typography, and purposeful negative space. Animations are not decorative. They carry meaning: a card flip communicates a reveal; a deal sequence communicates turn order.
 
 ### 6.1 Card Design System
 
@@ -304,4 +304,4 @@ UI: user selects action → adjudicate → FeedbackPanel render
 
 ---
 
-*PokerIQ — PRD v2.0 · Texas Hold'Em Decision Trainer · Draft*
+*rivr — PRD v2.0 · Texas Hold'Em Decision Trainer · Draft*
