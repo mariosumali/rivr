@@ -5,6 +5,11 @@
   flex-shrink: 0;
 }
 
+.card-perspective--xs {
+  width: 42px;
+  height: 60px;
+}
+
 .card-perspective--sm {
   width: 56px;
   height: 80px;
@@ -96,6 +101,7 @@
   letter-spacing: -0.02em;
 }
 
+.card-perspective--xs .card-rank { font-size: 14px; }
 .card-perspective--sm .card-rank { font-size: 18px; }
 .card-perspective--md .card-rank { font-size: 26px; }
 .card-perspective--lg .card-rank { font-size: 34px; }
@@ -104,6 +110,7 @@
   display: block;
 }
 
+.card-perspective--xs .card-suit-svg { width: 15px; height: 15px; }
 .card-perspective--sm .card-suit-svg { width: 20px; height: 20px; }
 .card-perspective--md .card-suit-svg { width: 28px; height: 28px; }
 .card-perspective--lg .card-suit-svg { width: 36px; height: 36px; }

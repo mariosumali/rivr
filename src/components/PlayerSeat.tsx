@@ -1,5 +1,5 @@
 import { Card } from './Card';
-import type { Card as CardType, Position, CardAnimationState } from '../engine/types';
+import type { Card as CardType, Position, CardAnimationState, Rank, Suit } from '../engine/types';
 import './PlayerSeat.css';
 
 interface PlayerSeatProps {
@@ -35,6 +35,7 @@ export function PlayerSeat({
     <div
       className={`player-seat ${isHero ? 'player-seat--hero' : ''} ${isActive ? 'player-seat--active' : ''} ${isFolded ? 'player-seat--folded' : ''}`}
     >
+      {isHero && isActive && <div className="player-seat__turn">Your turn</div>}
       {/* Avatar + info (opponents) */}
       {!isHero && (
         <div className="player-seat__avatar-row">
@@ -60,26 +61,26 @@ export function PlayerSeat({
 
       {/* Cards */}
       {!isFolded && (
-        <div className="player-seat__cards">
+        <div className={`player-seat__cards ${isHero && isActive ? 'player-seat__cards--active' : ''}`}>
           {cards ? (
             <>
               <Card
-                suit={faceDown ? undefined : (cards[0][1] as any)}
-                rank={faceDown ? undefined : (cards[0][0] as any)}
+                suit={faceDown ? undefined : (cards[0][1] as Suit)}
+                rank={faceDown ? undefined : (cards[0][0] as Rank)}
                 faceDown={faceDown}
                 animationState={animationState}
                 delay={dealDelay}
-                size={isHero ? 'md' : 'sm'}
+                size={isHero ? 'md' : 'xs'}
                 index={0}
                 isHero={isHero}
               />
               <Card
-                suit={faceDown ? undefined : (cards[1][1] as any)}
-                rank={faceDown ? undefined : (cards[1][0] as any)}
+                suit={faceDown ? undefined : (cards[1][1] as Suit)}
+                rank={faceDown ? undefined : (cards[1][0] as Rank)}
                 faceDown={faceDown}
                 animationState={animationState}
                 delay={dealDelay2 ?? dealDelay + 0.08}
-                size={isHero ? 'md' : 'sm'}
+                size={isHero ? 'md' : 'xs'}
                 index={1}
                 isHero={isHero}
               />

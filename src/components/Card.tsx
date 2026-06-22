@@ -11,7 +11,7 @@ interface CardProps {
   animationState?: CardAnimationState;
   delay?: number;
   style?: React.CSSProperties;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   index?: number;
   isHero?: boolean;
 }
@@ -50,10 +50,10 @@ function getSuitColorClass(suit: Suit): string {
 }
 
 const dealVariants: Variants = {
-  initial: { y: -250, opacity: 0, scale: 0.5, rotateZ: -15 },
+  initial: { y: -60, x: -14, opacity: 0, scale: 0.92 },
   animate: {
-    y: 0, opacity: 1, scale: 1, rotateZ: 0,
-    transition: { type: 'spring', stiffness: 300, damping: 22, mass: 0.8 },
+    y: 0, x: 0, opacity: 1, scale: 1,
+    transition: { duration: 0.34, ease: [0.22, 1, 0.36, 1] },
   },
 };
 
@@ -78,7 +78,6 @@ export function Card({
   delay = 0,
   style,
   size = 'md',
-  index,
   isHero = false,
 }: CardProps) {
   const isFaceDown = faceDown || !suit || !rank;
@@ -98,11 +97,9 @@ export function Card({
       animate="animate"
       transition={{ delay }}
       whileHover={isHero && !isFaceDown && animationState === 'idle' ? {
-        y: -16,
-        rotateX: -12,
-        rotateZ: index === 0 ? -3 : 3,
-        scale: 1.08,
-        transition: { type: 'spring', stiffness: 400, damping: 20 },
+        y: -6,
+        scale: 1.04,
+        transition: { duration: 0.12, ease: 'easeOut' },
       } : undefined}
       style={{ ...style, perspective: 800, transformStyle: 'preserve-3d' as const }}
     >

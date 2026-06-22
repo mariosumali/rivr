@@ -21,31 +21,31 @@ interface PokerTableProps {
   animationState?: CardAnimationState;
 }
 
+// Opponent seat positions live in the TOP portion of the table; the pot + board
+// occupy their own block lower-center, so cards never collide.
 const OPPONENT_POSITIONS: Record<number, { top: string; left: string }[]> = {
-  1: [
-    { top: '8%', left: '50%' },
-  ],
+  1: [{ top: '9%', left: '50%' }],
   2: [
-    { top: '14%', left: '25%' },
-    { top: '14%', left: '75%' },
+    { top: '11%', left: '24%' },
+    { top: '11%', left: '76%' },
   ],
   3: [
-    { top: '48%', left: '5%' },
-    { top: '8%', left: '50%' },
-    { top: '48%', left: '95%' },
+    { top: '34%', left: '9%' },
+    { top: '9%', left: '50%' },
+    { top: '34%', left: '91%' },
   ],
   4: [
-    { top: '55%', left: '5%' },
-    { top: '14%', left: '25%' },
-    { top: '14%', left: '75%' },
-    { top: '55%', left: '95%' },
+    { top: '38%', left: '8%' },
+    { top: '10%', left: '30%' },
+    { top: '10%', left: '70%' },
+    { top: '38%', left: '92%' },
   ],
   5: [
-    { top: '55%', left: '5%' },
-    { top: '14%', left: '16%' },
+    { top: '40%', left: '8%' },
+    { top: '11%', left: '25%' },
     { top: '8%', left: '50%' },
-    { top: '14%', left: '84%' },
-    { top: '55%', left: '95%' },
+    { top: '11%', left: '75%' },
+    { top: '40%', left: '92%' },
   ],
 };
 
@@ -69,20 +69,7 @@ export function PokerTable({
   return (
     <div className="poker-table-container">
       <div className="poker-table">
-        <div className="poker-table__felt">
-          <div className="poker-table__pot">
-            {pot > 0 && (
-              <span className="poker-table__pot-amount">pot {pot}bb</span>
-            )}
-          </div>
-          <div className="poker-table__community">
-            <CommunityCards
-              cards={communityCards}
-              animationState={animationState}
-              baseDelay={communityBaseDelay}
-            />
-          </div>
-        </div>
+        <div className="poker-table__felt" />
 
         {opponents.slice(0, oppCount).map((player, i) => {
           const dealOrder = i + 1;
@@ -106,6 +93,21 @@ export function PokerTable({
             </div>
           );
         })}
+
+        <div className="poker-table__center">
+          {pot > 0 && (
+            <div className="poker-table__pot">
+              <span className="poker-table__pot-amount">Pot {pot}bb</span>
+            </div>
+          )}
+          <div className="poker-table__community">
+            <CommunityCards
+              cards={communityCards}
+              animationState={animationState}
+              baseDelay={communityBaseDelay}
+            />
+          </div>
+        </div>
       </div>
 
       {hero && (

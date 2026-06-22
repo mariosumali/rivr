@@ -18,17 +18,13 @@
   min-height: 0;
 }
 
-/* Outer bezel — rounded rectangle */
+/* Outer bezel — rounded rectangle (decorative only) */
 .poker-table__felt {
   position: absolute;
   inset: 0;
   border: 1px solid var(--color-table-line, rgba(255, 255, 255, 0.12));
   border-radius: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
+  pointer-events: none;
 }
 
 /* Inner bezel — concentric rounded rectangle */
@@ -41,6 +37,19 @@
   pointer-events: none;
 }
 
+/* Pot + board block, lower-center, clear of the opponent seats */
+.poker-table__center {
+  position: absolute;
+  top: 66%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 2;
+}
+
 .poker-table__pot {
   display: flex;
   align-items: center;
@@ -49,10 +58,15 @@
 
 .poker-table__pot-amount {
   font-family: var(--piq-mono, var(--font-mono));
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--color-text-secondary, #777);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
+  padding: 4px 14px;
+  border: 1px solid var(--color-table-line, rgba(255, 255, 255, 0.12));
+  border-radius: 99px;
+  background: var(--color-bg);
+  white-space: nowrap;
 }
 
 .poker-table__community {
