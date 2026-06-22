@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { ActionType } from '../engine/types';
 import './ActionPanel.css';
 
@@ -9,6 +9,7 @@ interface ActionPanelProps {
   onAction: (action: ActionType, sizing?: number) => void;
   disabled?: boolean;
   variant?: 'default' | 'pokeriq';
+  difficulty?: 1 | 2 | 3;
 }
 
 export function ActionPanel({
@@ -18,6 +19,7 @@ export function ActionPanel({
   onAction,
   disabled = false,
   variant = 'default',
+  difficulty = 1,
 }: ActionPanelProps) {
   if (variant === 'pokeriq') {
     return (
@@ -27,6 +29,7 @@ export function ActionPanel({
         stackSize={stackSize}
         onAction={onAction}
         disabled={disabled}
+        difficulty={difficulty}
       />
     );
   }
@@ -42,51 +45,64 @@ export function ActionPanel({
   );
 }
 
+function clamp(n: number, lo: number, hi: number): number {
+  return Math.max(lo, Math.min(hi, n));
+}
+
 function PokeriqActionPanel({
   pot,
   callSize,
   stackSize,
   onAction,
   disabled,
+  difficulty = 1,
 }: Omit<ActionPanelProps, 'variant'>) {
-  const [raiseSize, setRaiseSize] = useState('');
-  const [preset, setPreset] = useState<'half' | 'threeQuarter' | 'pot' | null>(null);
-
   const canCheck = callSize === 0;
-  const minRaise = callSize > 0 ? callSize * 2 : 1;
+  const minRaise = Math.round((callSize > 0 ? callSize * 2 : 1) * 10) / 10;
+  const noSizing = difficulty === 1;
 
-  const handleQuickRaise = (multiplier: number, key: typeof preset) => {
-    const size = Math.min(Math.round(pot * multiplier * 10) / 10, stackSize);
-    setPreset(key);
-    onAction('raise', size);
-    setRaiseSize('');
+  // Default the slider to a standard size: ~2.5x the call preflop, ¾ pot otherwise.
+  const defaultRaise = useMemo(() => {
+    const base = callSize > 0 && pot <= callSize * 3 ? callSize * 2.5 : pot * 0.75;
+    return Math.round(clamp(base, minRaise, stackSize) * 10) / 10;
+  }, [callSize, pot, minRaise, stackSize]);
+
+  // Local tray state resets per spot via a `key` on the parent (see DecisionView),
+  // so initial values from the current spot are always correct.
+  const [trayOpen, setTrayOpen] = useState(false);
+  const [raiseValue, setRaiseValue] = useState(defaultRaise);
+
+  const commitRaise = (size: number) => {
+    onAction('raise', Math.round(clamp(size, minRaise, stackSize) * 10) / 10);
   };
 
-  const handleAllIn = () => {
-    setPreset(null);
-    onAction('raise', stackSize);
-    setRaiseSize('');
-  };
-
-  const handleCustomRaise = () => {
-    const size = parseFloat(raiseSize);
-    if (!Number.isNaN(size) && size >= minRaise && size <= stackSize) {
-      setPreset(null);
-      onAction('raise', size);
-      setRaiseSize('');
+  const handleRaiseClick = () => {
+    if (noSizing) {
+      commitRaise(defaultRaise);
+    } else {
+      setTrayOpen((o) => !o);
     }
   };
+
+  const presets: { label: string; value: number }[] = [
+    { label: '½ pot', value: pot * 0.5 },
+    { label: '¾ pot', value: pot * 0.75 },
+    { label: 'Pot', value: pot },
+    { label: 'All-in', value: stackSize },
+  ];
 
   return (
     <div className="action-panel action-panel--pokeriq">
       <div className="action-panel__pokeriq-row1">
         <button
           type="button"
-          className="action-panel__piq-cell"
+          className="action-panel__piq-cell action-panel__piq-cell--fold"
           onClick={() => onAction('fold')}
           disabled={disabled}
         >
-          <span className="action-panel__piq-lbl">Action</span>
+          <span className="action-panel__piq-lbl">
+            Fold <span className="action-panel__piq-key">F</span>
+          </span>
           <span className="action-panel__piq-val">Fold</span>
         </button>
         {canCheck ? (
@@ -96,7 +112,9 @@ function PokeriqActionPanel({
             onClick={() => onAction('check')}
             disabled={disabled}
           >
-            <span className="action-panel__piq-lbl">Action</span>
+            <span className="action-panel__piq-lbl">
+              Check <span className="action-panel__piq-key">C</span>
+            </span>
             <span className="action-panel__piq-val action-panel__piq-val--bright">Check</span>
           </button>
         ) : (
@@ -107,61 +125,73 @@ function PokeriqActionPanel({
             disabled={disabled}
           >
             <span className="action-panel__piq-lbl">
-              Action <span className="action-panel__piq-lbl-dim">· {callSize}bb</span>
+              Call · {callSize}bb <span className="action-panel__piq-key">C</span>
             </span>
             <span className="action-panel__piq-val action-panel__piq-val--bright">Call</span>
           </button>
         )}
-        <button type="button" className="action-panel__piq-cell" disabled={disabled}>
-          <span className="action-panel__piq-lbl">Action</span>
-          <span className="action-panel__piq-val action-panel__piq-val--bright">Raise</span>
+        <button
+          type="button"
+          className={`action-panel__piq-cell ${trayOpen ? 'action-panel__piq-cell--armed' : ''}`}
+          onClick={handleRaiseClick}
+          disabled={disabled}
+        >
+          <span className="action-panel__piq-lbl">
+            {canCheck ? 'Bet' : 'Raise'} <span className="action-panel__piq-key">R</span>
+          </span>
+          <span className="action-panel__piq-val action-panel__piq-val--bright">
+            {noSizing ? (canCheck ? 'Bet' : 'Raise') : trayOpen ? 'Choose size…' : canCheck ? 'Bet' : 'Raise'}
+          </span>
         </button>
       </div>
-      <div className="action-panel__pokeriq-row2">
-        <span className="action-panel__piq-sizing-lbl">Sizing</span>
-        <div className="action-panel__piq-chips">
-          <button
-            type="button"
-            className={`action-panel__piq-chip ${preset === 'half' ? 'action-panel__piq-chip--on' : ''}`}
-            onClick={() => handleQuickRaise(0.5, 'half')}
-            disabled={disabled}
-          >
-            ½ pot
-          </button>
-          <button
-            type="button"
-            className={`action-panel__piq-chip ${preset === 'threeQuarter' ? 'action-panel__piq-chip--on' : ''}`}
-            onClick={() => handleQuickRaise(0.75, 'threeQuarter')}
-            disabled={disabled}
-          >
-            ¾ pot
-          </button>
-          <button
-            type="button"
-            className={`action-panel__piq-chip ${preset === 'pot' ? 'action-panel__piq-chip--on' : ''}`}
-            onClick={() => handleQuickRaise(1, 'pot')}
-            disabled={disabled}
-          >
-            Pot
-          </button>
-          <button type="button" className="action-panel__piq-chip" onClick={handleAllIn} disabled={disabled}>
-            All-in
-          </button>
+
+      {!noSizing && trayOpen && (
+        <div className="action-panel__sizing-tray">
+          <div className="action-panel__sizing-head">
+            <span className="action-panel__piq-sizing-lbl">Raise to</span>
+            <span className="action-panel__sizing-amt">{raiseValue}bb</span>
+            <span className="action-panel__sizing-pct">
+              {pot > 0 ? `${Math.round((raiseValue / pot) * 100)}% pot` : ''}
+            </span>
+          </div>
           <input
-            type="number"
-            className="action-panel__piq-input"
-            placeholder={`${minRaise}–${stackSize}`}
-            value={raiseSize}
-            onChange={(e) => setRaiseSize(e.target.value)}
+            type="range"
+            className="action-panel__piq-slider"
             min={minRaise}
             max={stackSize}
             step={0.5}
+            value={raiseValue}
+            onChange={(e) => setRaiseValue(parseFloat(e.target.value))}
             disabled={disabled}
-            onKeyDown={(e) => e.key === 'Enter' && handleCustomRaise()}
             aria-label="Raise size in bb"
           />
+          <div className="action-panel__piq-chips">
+            {presets.map((p) => {
+              const v = Math.round(clamp(p.value, minRaise, stackSize) * 10) / 10;
+              const on = Math.abs(v - raiseValue) < 0.05;
+              return (
+                <button
+                  key={p.label}
+                  type="button"
+                  className={`action-panel__piq-chip ${on ? 'action-panel__piq-chip--on' : ''}`}
+                  onClick={() => setRaiseValue(v)}
+                  disabled={disabled}
+                >
+                  {p.label}
+                </button>
+              );
+            })}
+            <button
+              type="button"
+              className="action-panel__piq-confirm"
+              onClick={() => commitRaise(raiseValue)}
+              disabled={disabled}
+            >
+              Raise to {raiseValue}bb
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
