@@ -18,6 +18,8 @@ export interface EquityResult {
   ties: number;
 }
 
+export type VillainAction = 'rfi' | '3bet' | 'continue';
+
 export interface GameState {
   heroHand: [Card, Card];
   communityCards: Card[];
@@ -28,6 +30,10 @@ export interface GameState {
   position: Position;
   activePlayers: number;
   street: Street;
+  /** Seat the modeled villain occupies (the aggressor). */
+  villainPosition?: Position;
+  /** What action sequence produced this spot — drives the villain range. */
+  villainAction?: VillainAction;
 }
 
 export interface SizingRange {
