@@ -1,7 +1,20 @@
-import { useState } from 'react';
-import { BTN_OPENING_RANGE, type RangeTier } from '../../data/btnOpeningRange';
+import { useCallback, useMemo, useState } from 'react';
+import { Card } from '../Card';
+import { useGameStore } from '../../store/gameStore';
+import type { Card as CardType, Position, Rank, Suit } from '../../engine/types';
+import {
+  allHandClasses,
+  classifyOpen,
+  comboCount,
+  handClassOf,
+  rangeBreakdown,
+  type HandClass,
+  type RangeTier,
+} from '../../engine/ranges';
 
-const POSITIONS = ['UTG', 'HJ', 'CO', 'BTN', 'SB', 'BB'] as const;
+const POSITIONS: Position[] = ['UTG', 'HJ', 'CO', 'BTN', 'SB', 'BB'];
+const SUITS: Suit[] = ['h', 'd', 'c', 's'];
+const HAND_CLASSES = allHandClasses();
 
 function tierClass(t: RangeTier): string {
   if (t === 'raise') return 'piq-rg--raise';
@@ -9,14 +22,86 @@ function tierClass(t: RangeTier): string {
   return 'piq-rg--fold';
 }
 
+/** Deal a concrete two-card hand for a hand class, weighted by combo count. */
+function dealWeightedHand(): { hc: HandClass; cards: [CardType, CardType] } {
+  const total = HAND_CLASSES.reduce((s, hc) => s + comboCount(hc), 0);
+  let r = Math.random() * total;
+  let hc = HAND_CLASSES[0];
+  for (const c of HAND_CLASSES) {
+    r -= comboCount(c);
+    if (r <= 0) {
+      hc = c;
+      break;
+    }
+  }
+  return { hc, cards: concreteCards(hc) };
+}
+
+function concreteCards(hc: HandClass): [CardType, CardType] {
+  const r1 = hc[0] as Rank;
+  const r2 = hc[1] as Rank;
+  const pick = <T,>(a: T[]) => a[Math.floor(Math.random() * a.length)];
+  if (hc.length === 2) {
+    const [s1, s2] = shuffle(SUITS).slice(0, 2);
+    return [`${r1}${s1}` as CardType, `${r2}${s2}` as CardType];
+  }
+  if (hc.endsWith('s')) {
+    const s = pick(SUITS);
+    return [`${r1}${s}` as CardType, `${r2}${s}` as CardType];
+  }
+  const s1 = pick(SUITS);
+  let s2 = pick(SUITS);
+  while (s2 === s1) s2 = pick(SUITS);
+  return [`${r1}${s1}` as CardType, `${r2}${s2}` as CardType];
+}
+
+function shuffle<T>(arr: T[]): T[] {
+  const c = [...arr];
+  for (let i = c.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [c[i], c[j]] = [c[j], c[i]];
+  }
+  return c;
+}
+
+const TIER_VERB: Record<RangeTier, string> = { raise: 'Raise', call: 'Call', fold: 'Fold' };
+
 export function RangeTrainerView() {
-  const [pos, setPos] = useState<(typeof POSITIONS)[number]>('BTN');
+  const rangeStats = useGameStore((s) => s.rangeStats);
+  const recordRangeAnswer = useGameStore((s) => s.recordRangeAnswer);
+
+  const [pos, setPos] = useState<Position>('BTN');
+  const [hand, setHand] = useState(() => dealWeightedHand());
+  const [feedback, setFeedback] = useState<{ correct: boolean; answer: RangeTier } | null>(null);
+
+  const handClass = hand.hc;
+  const correctTier = useMemo(
+    () => classifyOpen(pos, handClassOf(hand.cards[0], hand.cards[1])),
+    [pos, hand],
+  );
+  const breakdown = useMemo(() => rangeBreakdown(pos), [pos]);
+
+  const handleAction = useCallback(
+    (action: RangeTier) => {
+      if (feedback) return;
+      const correct = action === correctTier;
+      setFeedback({ correct, answer: correctTier });
+      recordRangeAnswer(pos, correct);
+      setTimeout(() => {
+        setFeedback(null);
+        setHand(dealWeightedHand());
+      }, 1100);
+    },
+    [feedback, correctTier, pos, recordRangeAnswer],
+  );
+
+  const drillLabel = pos === 'BB' ? 'BB defense vs BTN steal' : 'Opening range (RFI)';
 
   return (
     <div className="piq-range-shell">
       <div className="piq-range-center">
         <div className="piq-range-hud">
-          <span className="piq-range-title">Opening Ranges</span>
+          <span className="piq-range-title">{drillLabel}</span>
           <span className="piq-range-meta">100bb · 6-max</span>
           <div className="piq-pos-tabs">
             {POSITIONS.map((p) => (
@@ -24,139 +109,106 @@ export function RangeTrainerView() {
                 key={p}
                 type="button"
                 className={pos === p ? 'piq-pos-tabs__on' : ''}
-                onClick={() => setPos(p)}
+                onClick={() => {
+                  setPos(p);
+                  setFeedback(null);
+                }}
               >
                 {p}
               </button>
             ))}
           </div>
         </div>
-        <div className="piq-range-grid" aria-label="Opening range matrix">
-          {pos === 'BTN'
-            ? BTN_OPENING_RANGE.map((cell) => (
-                <div key={cell.label} className={`piq-rg ${tierClass(cell.tier)}`}>
-                  {cell.label}
-                </div>
-              ))
-            : Array.from({ length: 169 }, (_, i) => (
-                <div key={i} className="piq-rg piq-rg--fold">
-                  —
-                </div>
-              ))}
+
+        <div className="piq-range-grid" aria-label={`${pos} range matrix`}>
+          {HAND_CLASSES.map((hc) => {
+            const tier = classifyOpen(pos, hc);
+            const isCurrent = hc === handClass;
+            return (
+              <div
+                key={hc}
+                className={`piq-rg ${tierClass(tier)}${isCurrent ? ' piq-rg--highlight' : ''}`}
+              >
+                {hc.length === 2 ? hc : hc.slice(0, 2) + (hc.endsWith('s') ? 's' : '')}
+              </div>
+            );
+          })}
         </div>
-        {pos === 'BTN' && (
-          <div className="piq-range-legend">
-            <div className="piq-leg">
-              <span className="piq-leg__sw" style={{ background: 'rgba(184,50,40,0.35)' }} />
-              Raise · 44%
-            </div>
+
+        <div className="piq-range-legend">
+          <div className="piq-leg">
+            <span className="piq-leg__sw" style={{ background: 'rgba(184,50,40,0.35)' }} />
+            {pos === 'BB' ? '3-Bet' : 'Raise'} · {breakdown.raise}%
+          </div>
+          {breakdown.call > 0 && (
             <div className="piq-leg">
               <span className="piq-leg__sw" style={{ background: 'rgba(74,126,160,0.3)' }} />
-              Call · 8%
+              Call · {breakdown.call}%
             </div>
-            <div className="piq-leg">
-              <span
-                className="piq-leg__sw"
-                style={{ background: 'var(--piq-ink-2)', border: '1px solid var(--piq-line)' }}
-              />
-              Fold · 48%
-            </div>
+          )}
+          <div className="piq-leg">
+            <span
+              className="piq-leg__sw"
+              style={{ background: 'var(--piq-ink-2)', border: '1px solid var(--piq-line)' }}
+            />
+            Fold · {breakdown.fold}%
           </div>
-        )}
-        {pos !== 'BTN' && (
-          <p className="piq-panel-placeholder" style={{ marginTop: 12 }}>
-            Range charts for {pos} ship in a later build. BTN is fully interactive.
-          </p>
-        )}
+        </div>
       </div>
+
       <div className="piq-range-right">
         <div className="piq-sidebar__lbl">Your hand · {pos}</div>
-        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', padding: '8px 0' }}>
-          <MiniCard rank="Q" suit="♥" color="#b83228" />
-          <MiniCard rank="J" suit="♦" color="#4a7ea0" />
+        <div className="piq-rt-hand">
+          <Card rank={hand.cards[0][0] as Rank} suit={hand.cards[0][1] as Suit} size="md" />
+          <Card rank={hand.cards[1][0] as Rank} suit={hand.cards[1][1] as Suit} size="md" />
         </div>
-        <div className="piq-range-meta" style={{ textAlign: 'center' }}>
-          QJo · vs no prior action
+        <div className="piq-range-meta piq-rt-handlabel">
+          {handClass} · {drillLabel}
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6, marginTop: 8 }}>
-          <button type="button" className="piq-skip" style={{ padding: '14px 8px', textAlign: 'center' }}>
-            Fold
-          </button>
-          <button type="button" className="piq-skip" style={{ padding: '14px 8px', textAlign: 'center' }}>
-            Call
-          </button>
-          <button type="button" className="piq-skip" style={{ padding: '14px 8px', textAlign: 'center' }}>
-            Raise
-          </button>
-        </div>
-        <div className="piq-sidebar__lbl" style={{ marginTop: 20 }}>
-          Position accuracy
-        </div>
-        <AccRow label="BTN" pct={82} bad={false} />
-        <AccRow label="CO" pct={74} bad={false} />
-        <AccRow label="HJ" pct={61} bad={false} />
-        <AccRow label="UTG" pct={48} bad />
-        <AccRow label="SB" pct={55} bad />
-        <AccRow label="BB" pct={69} bad={false} />
-      </div>
-    </div>
-  );
-}
 
-function MiniCard({ rank, suit, color }: { rank: string; suit: string; color: string }) {
-  return (
-    <div
-      style={{
-        width: 52,
-        height: 72,
-        borderRadius: 8,
-        border: '1px solid var(--piq-line-hi)',
-        background: 'var(--piq-ink-2)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 18,
-        fontWeight: 600,
-        color,
-      }}
-    >
-      {rank}
-      <span style={{ fontSize: 22, lineHeight: 1 }}>{suit}</span>
-    </div>
-  );
-}
+        {feedback ? (
+          <div className={`piq-rt-feedback ${feedback.correct ? 'piq-rt-feedback--ok' : 'piq-rt-feedback--no'}`}>
+            {feedback.correct
+              ? `Correct — ${TIER_VERB[feedback.answer]}`
+              : `Incorrect — GTO ${TIER_VERB[feedback.answer].toLowerCase()}s here`}
+          </div>
+        ) : (
+          <div className="piq-rt-actions">
+            <button type="button" className="piq-rt-act" onClick={() => handleAction('fold')}>
+              Fold
+            </button>
+            <button type="button" className="piq-rt-act" onClick={() => handleAction('call')}>
+              {pos === 'BB' ? 'Call' : 'Limp'}
+            </button>
+            <button type="button" className="piq-rt-act" onClick={() => handleAction('raise')}>
+              {pos === 'BB' ? '3-Bet' : 'Raise'}
+            </button>
+          </div>
+        )}
 
-function AccRow({ label, pct, bad }: { label: string; pct: number; bad: boolean }) {
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-      <span style={{ fontFamily: 'var(--piq-mono)', fontSize: 10, width: 32, color: 'var(--color-text-muted)' }}>
-        {label}
-      </span>
-      <div style={{ flex: 1, height: 3, background: 'var(--piq-line-hi)', borderRadius: 2 }}>
-        <div
-          style={{
-            width: `${pct}%`,
-            height: '100%',
-            borderRadius: 2,
-            background: bad ? 'var(--piq-danger)' : 'var(--color-text-primary)',
-          }}
-        />
+        <div className="piq-sidebar__lbl piq-rt-statlbl">Accuracy by position</div>
+        {POSITIONS.map((p) => {
+          const stat = rangeStats[p];
+          const total = stat?.total ?? 0;
+          const pct = total ? Math.round((stat!.correct / total) * 100) : 0;
+          const bad = total >= 5 && pct < 60;
+          return (
+            <div key={p} className="piq-rt-statrow">
+              <span className="piq-rt-statrow__pos">{p}</span>
+              <div className="piq-rt-statrow__track">
+                <div
+                  className={`piq-rt-statrow__fill ${bad ? 'piq-rt-statrow__fill--bad' : ''}`}
+                  style={{ width: `${pct}%` }}
+                />
+              </div>
+              <span className={`piq-rt-statrow__pct ${bad ? 'piq-rt-statrow__pct--bad' : ''}`}>
+                {total ? `${pct}%` : '—'}
+              </span>
+              <span className="piq-rt-statrow__n">{total ? `${total}` : ''}</span>
+            </div>
+          );
+        })}
       </div>
-      <span
-        style={{
-          fontFamily: 'var(--piq-mono)',
-          fontSize: 10,
-          width: 32,
-          textAlign: 'right',
-          color: bad ? 'var(--piq-danger)' : 'var(--color-text-secondary)',
-        }}
-      >
-        {pct}%
-      </span>
-      {bad && (
-        <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--piq-danger)' }} />
-      )}
     </div>
   );
 }
